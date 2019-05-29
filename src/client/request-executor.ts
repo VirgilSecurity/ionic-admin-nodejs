@@ -47,8 +47,10 @@ export default class RequestExecutor {
   };
 
   private responseErrorHandler(error: AxiosError): Promise<IonicApiError> {
-    const { response } = error;
+    const { response, request } = error;
     if (response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
       const { data } = response;
       if (data) {
         const message = data.message || error.message;
@@ -56,6 +58,7 @@ export default class RequestExecutor {
       }
       return Promise.reject(new IonicApiError(error.message, response.status));
     }
-    return Promise.reject(new Error(error.message));
+
+    return Promise.reject(error);
   }
 }

@@ -1,4 +1,4 @@
-class IonicError extends Error {
+export class IonicError extends Error {
   constructor(message: string) {
     super(message);
     Object.setPrototypeOf(this, new.target.prototype);
