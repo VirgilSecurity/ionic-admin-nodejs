@@ -4,7 +4,7 @@ import BearerAuthentication from './bearer-authentication';
 import MacAuthentication from './mac-authentication';
 
 function assertNever(x: never): never {
-  throw new Error('Unexpected object: ' + x);
+  throw new Error('Unexpected authentication options: ' + x);
 }
 
 export default function createAuthentication(options: AuthOptions): Authentication {

@@ -47,7 +47,7 @@ export default class RequestExecutor {
   };
 
   private responseErrorHandler(error: AxiosError): Promise<IonicApiError> {
-    const { response, request } = error;
+    const { response } = error;
     if (response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
