@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "keywords": [],
-  "main": "dist/ionic-admin-sdk.umd.js",
+  "main": "dist/ionic-admin-sdk.cjs.js",
   "module": "dist/ionic-admin-sdk.esm.js",
   "typings": "dist/types/ionic-admin-sdk.d.ts",
   "files": [
