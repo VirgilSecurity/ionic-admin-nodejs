@@ -2,13 +2,22 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosPromise, AxiosError } fr
 import { Authentication } from './auth/authentication';
 import { IonicApiError } from './errors';
 
+interface RequestExecutorParams {
+  baseUrl: string;
+  authentication: Authentication;
+  paramsSerializer: (params: any) => string;
+}
+
 export default class RequestExecutor {
   private _authentication: Authentication;
   private _axios: AxiosInstance;
 
-  constructor(baseURL: string, authentication: Authentication) {
+  constructor({ baseUrl, authentication, paramsSerializer }: RequestExecutorParams) {
     this._authentication = authentication;
-    this._axios = axios.create({ baseURL });
+    this._axios = axios.create({
+      baseURL: baseUrl,
+      paramsSerializer,
+    });
     this._axios.interceptors.request.use(this.requestConfigHandler, undefined);
     this._axios.interceptors.response.use(undefined, this.responseErrorHandler);
   }

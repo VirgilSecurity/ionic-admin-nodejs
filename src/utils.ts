@@ -5,3 +5,5 @@ export const addDays = (moment: Date, days: number): Date => {
 };
 
 export const subtractDays = (moment: Date, days: number): Date => addDays(moment, -days);
+
+export const isPlainObject = (obj: any): obj is {} => Object.prototype.toString.call(obj) === '[object Object]';

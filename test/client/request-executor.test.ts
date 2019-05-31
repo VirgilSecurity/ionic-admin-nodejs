@@ -5,8 +5,9 @@ import { Authentication } from '../../src/client/auth/authentication';
 import { IonicApiError } from '../../src/client/errors';
 
 describe('RequestExecutor', () => {
-  const baseURL = 'https://example.com';
-  const authenticationMock: Authentication = {
+  const baseUrl = 'https://example.com';
+  const paramsSerializerStub = () => '';
+  const authenticationStub: Authentication = {
     authenticate: (req: AxiosRequestConfig) => req,
   };
 
@@ -16,7 +17,7 @@ describe('RequestExecutor', () => {
   beforeAll(() => {
     axiosCreateOriginal = axios.create;
     axios.create = jest.fn().mockImplementation(() => {
-      const axiosInstance = axiosCreateOriginal({ baseURL });
+      const axiosInstance = axiosCreateOriginal({ baseURL: baseUrl });
       axiosMockAdapter = new AxiosMockAdapter(axiosInstance);
       return axiosInstance;
     });
@@ -31,16 +32,20 @@ describe('RequestExecutor', () => {
   });
 
   test("should create 'AxiosInstance' with 'baseURL'", () => {
-    new RequestExecutor(baseURL, authenticationMock);
-    expect(axios.create).toBeCalledWith({ baseURL });
+    new RequestExecutor({ baseUrl, authentication: authenticationStub, paramsSerializer: paramsSerializerStub });
+    expect(axios.create).toBeCalledWith({ baseURL: baseUrl, paramsSerializer: paramsSerializerStub });
     (axios.create as jest.Mock).mockClear();
   });
 
   test('should authenticate requests', async () => {
     const url = '/test';
-    const config = { url: baseURL + url, method: 'get' };
-    const executor = new RequestExecutor(baseURL, authenticationMock);
-    const spy = jest.spyOn(authenticationMock, 'authenticate');
+    const config = { url: baseUrl + url, method: 'get' };
+    const executor = new RequestExecutor({
+      baseUrl,
+      authentication: authenticationStub,
+      paramsSerializer: paramsSerializerStub,
+    });
+    const spy = jest.spyOn(authenticationStub, 'authenticate');
     axiosMockAdapter.onGet(url).reply(200, {});
 
     expect.assertions(1);
@@ -55,7 +60,11 @@ describe('RequestExecutor', () => {
     const status = 500;
     const message = 'something went wrong';
     const data = { code: 12345, message };
-    const executor = new RequestExecutor(baseURL, authenticationMock);
+    const executor = new RequestExecutor({
+      baseUrl,
+      authentication: authenticationStub,
+      paramsSerializer: paramsSerializerStub,
+    });
 
     axiosMockAdapter.onGet(url).reply(status, data);
     expect.assertions(4);
@@ -71,7 +80,11 @@ describe('RequestExecutor', () => {
 
   it("should throw 'Error' when no response was received", async () => {
     const url = '/test';
-    const executor = new RequestExecutor(baseURL, authenticationMock);
+    const executor = new RequestExecutor({
+      baseUrl,
+      authentication: authenticationStub,
+      paramsSerializer: paramsSerializerStub,
+    });
 
     axiosMockAdapter.onGet(url).timeout();
     expect.assertions(2);
@@ -86,7 +99,11 @@ describe('RequestExecutor', () => {
 
   it("should throw 'Error' on network error", async () => {
     const url = '/test';
-    const executor = new RequestExecutor(baseURL, authenticationMock);
+    const executor = new RequestExecutor({
+      baseUrl,
+      authentication: authenticationStub,
+      paramsSerializer: paramsSerializerStub,
+    });
 
     axiosMockAdapter.onGet(url).networkError();
     expect.assertions(2);
