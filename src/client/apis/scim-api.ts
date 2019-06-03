@@ -1,6 +1,6 @@
 import ApiClient from './api-client';
 import RequestExecutor from '../request-executor';
-import UserApiClient from './scim/users';
+import { UserApiClient } from './scim/users';
 
 const Schemas = {
   Core: 'urn:scim:schemas:core:1.0',

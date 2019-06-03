@@ -23,7 +23,7 @@ export interface UserFilterParams extends ResourceFilterParams {
   updatedTs?: number;
 }
 
-export default class UserApiClient extends ApiClient {
+export class UserApiClient extends ApiClient {
   async create(userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
     const response = await this.requestExecutor.post<UserResource>(this.prefix, userData, {
       params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,

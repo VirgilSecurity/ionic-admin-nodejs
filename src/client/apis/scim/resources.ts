@@ -8,7 +8,6 @@ export interface ResourceMeta {
 export interface Resource {
   schemas: string[];
   id: string;
-  externalId: string;
   meta: ResourceMeta;
 }
 
@@ -18,12 +17,20 @@ export interface ResourceList<T> {
   Resources: T[];
 }
 
-export interface UserResource {
+export interface UserResource extends Resource {
+  externalId: string;
   active?: boolean;
   emails?: { value: string; type: string; primary: boolean }[];
   groups?: { type: string; value: string; displayName: string }[];
   name?: { givenName: string; familyName: string; formatted: string };
   roles?: { type: string; value: string; display: string };
   userName?: string;
+  [schema: string]: any;
+}
+
+export interface GroupResource extends Resource {
+  externalId: string;
+  displayName: string;
+  members: { value: string; type?: string; display?: string }[];
   [schema: string]: any;
 }
