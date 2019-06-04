@@ -2,7 +2,7 @@ import createAuthentication from './auth/create-authentication';
 import { AuthOptions } from './auth/authentication';
 import RequestExecutor from './request-executor';
 import { paramsSerializer } from './url-params-builder';
-import { ScimApiClient } from './apis/scim-api';
+import { ScimApiClient } from './apis/scim-api-client';
 
 export interface IonicApiClientParams {
   baseUrl: string;

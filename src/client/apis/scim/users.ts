@@ -1,9 +1,8 @@
-import ApiClient from '../api-client';
-import { UserResource, ResourceList } from './resources';
-import { buildUrlParams, ResourceFilterParams, QueryParams } from '../../url-params-builder';
+import ResourceApiClient from '../resource-api-client';
+import { UserResource, ResourceList, ResourceData } from './resources';
+import { ResourceFilterParams, QueryParams } from '../../url-params-builder';
 
-export interface UserData {
-  schemas?: string[];
+export interface UserData extends ResourceData {
   name: { givenName?: string; familyName?: string; formatted?: string };
   externalId?: string;
   emails?: { value: string; type?: string; primary?: boolean }[];
@@ -23,36 +22,30 @@ export interface UserFilterParams extends ResourceFilterParams {
   updatedTs?: number;
 }
 
-export class UserApiClient extends ApiClient {
-  async create(userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
-    const response = await this.requestExecutor.post<UserResource>(this.prefix, userData, {
-      params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,
-    });
-    return response.data;
+export class UserApiClient {
+  private readonly _client: ResourceApiClient<UserResource, UserFilterParams>;
+
+  constructor(resourceApiClient: ResourceApiClient<UserResource, UserFilterParams>) {
+    this._client = resourceApiClient;
   }
 
-  async list(params?: QueryParams<UserFilterParams>): Promise<ResourceList<UserResource>> {
-    const response = await this.requestExecutor.get<ResourceList<UserResource>>(this.prefix, {
-      params: params ? buildUrlParams(params) : undefined,
-    });
-    return response.data;
+  create(userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
+    return this._client.createResource(userData, attributesToReturn);
   }
 
-  async fetch(userId: string, attributesToReturn?: string[]): Promise<UserResource> {
-    const response = await this.requestExecutor.get<UserResource>(this.prefix + '/' + userId, {
-      params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,
-    });
-    return response.data;
+  list(params?: QueryParams<UserFilterParams>): Promise<ResourceList<UserResource>> {
+    return this._client.getResourceList(params);
   }
 
-  async update(userId: string, userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
-    const response = await this.requestExecutor.put<UserResource>(this.prefix + '/' + userId, userData, {
-      params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,
-    });
-    return response.data;
+  fetch(userId: string, attributesToReturn?: string[]): Promise<UserResource> {
+    return this._client.getResource(userId, attributesToReturn);
   }
 
-  async delete(userId: string): Promise<void> {
-    await this.requestExecutor.delete(this.prefix + '/' + userId);
+  update(userId: string, userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
+    return this._client.updateResource(userId, userData, attributesToReturn);
+  }
+
+  delete(userId: string): Promise<void> {
+    return this._client.deleteResource(userId);
   }
 }

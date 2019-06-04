@@ -1,141 +1,73 @@
 import { UserApiClient } from '../../../src/client/apis/scim/users';
-import { IonicUrlParams } from '../../../src/client/url-params-builder';
 
 test('can create user', async () => {
   const expectedUser = {
     id: 'test',
   };
-  const reqExecutorMock: any = {
-    post: jest.fn().mockResolvedValue({ data: expectedUser }),
+  const resourceApiClientMock: any = {
+    createResource: jest.fn().mockResolvedValue(expectedUser),
   };
-  const users = new UserApiClient(reqExecutorMock, '/TestUsers');
+  const users = new UserApiClient(resourceApiClientMock);
 
-  expect.assertions(4);
-
-  const userData = { name: { givenName: 'Test', familyName: 'User' } };
-  const actualUser = await users.create(userData);
-  const [actualUrl, actualData, actualConfig] = reqExecutorMock.post.mock.calls[0];
+  const userData = { schemas: ['urn:scim:schemas:core:1.0'], name: { givenName: 'Test', familyName: 'User' } };
+  const attrs = ['name', 'emails'];
+  const actualUser = await users.create(userData, attrs);
 
   expect(actualUser).toBe(expectedUser);
-  expect(actualUrl).toBe('/TestUsers');
-  expect(actualData).toBe(userData);
-  expect(actualConfig.params).toBeUndefined();
+  expect(resourceApiClientMock.createResource).toHaveBeenCalledWith(userData, attrs);
 });
 
-test('can specify attributes to return after creating user', async () => {
-  const reqExecutorMock: any = {
-    post: jest.fn().mockResolvedValue({ data: {} }),
-  };
-  const users = new UserApiClient(reqExecutorMock, '/TestUsers');
-
-  expect.assertions(2);
-  const userData = { name: { givenName: 'Test', familyName: 'User' } };
-  await users.create(userData, ['name', 'emails']);
-  const [, , actualConfig] = reqExecutorMock.post.mock.calls[0];
-  expect(actualConfig.params).toBeInstanceOf(IonicUrlParams);
-  expect(actualConfig.params.params.attributes).toBe('name,emails');
-});
-
-test('can list users', async () => {
+test('can get user list', async () => {
   const expectedResult = {};
-  const reqExecutorMock: any = {
-    get: jest.fn().mockResolvedValue({ data: expectedResult }),
+  const resourceApiClientMock: any = {
+    getResourceList: jest.fn().mockResolvedValue(expectedResult),
   };
-  const users = new UserApiClient(reqExecutorMock, '/TestUsers');
+  const users = new UserApiClient(resourceApiClientMock);
 
-  expect.assertions(3);
-  const result = await users.list();
-  const [actualUrl, actualConfig] = reqExecutorMock.get.mock.calls[0];
+  const params = { skip: 1, limit: 10, filter: { email: 'user@example.com' } };
+  const result = await users.list(params);
   expect(result).toBe(expectedResult);
-  expect(actualUrl).toBe('/TestUsers');
-  expect(actualConfig.params).toBeUndefined();
+  expect(resourceApiClientMock.getResourceList).toHaveBeenCalledWith(params);
 });
 
-test('can provide search params', async () => {
-  const reqExecutorMock: any = {
-    get: jest.fn().mockResolvedValue({ data: {} }),
-  };
-  const users = new UserApiClient(reqExecutorMock, '/TestUsers');
-  expect.assertions(4);
-  await users.list({ skip: 1, limit: 10, filter: { email: 'user@example.com' } });
-  const [, actualConfig] = reqExecutorMock.get.mock.calls[0];
-  expect(actualConfig.params).toBeInstanceOf(IonicUrlParams);
-  expect(actualConfig.params.params.skip).toBe(1);
-  expect(actualConfig.params.params.limit).toBe(10);
-  expect(actualConfig.params.params.email).toBe('user@example.com');
-});
-
-test('can fetch user', async () => {
-  const userId = 'test_id';
+test('can get user by id', async () => {
   const expectedUser = {};
-  const reqExecutorMock: any = {
-    get: jest.fn().mockResolvedValue({ data: expectedUser }),
+  const resourceApiClientMock: any = {
+    getResource: jest.fn().mockResolvedValue(expectedUser),
   };
-  const users = new UserApiClient(reqExecutorMock, '/TestUsers');
+  const users = new UserApiClient(resourceApiClientMock);
 
-  expect.assertions(3);
-  const actualUser = await users.fetch(userId);
-  const [actualUrl, actualConfig] = reqExecutorMock.get.mock.calls[0];
+  const userId = 'test_id';
+  const attrs = ['name', 'emails'];
+  const actualUser = await users.fetch(userId, attrs);
   expect(actualUser).toBe(expectedUser);
-  expect(actualUrl).toBe('/TestUsers/test_id');
-  expect(actualConfig.params).toBeUndefined();
-});
-
-test('can specify attributes to return when fetching', async () => {
-  const reqExecutorMock: any = {
-    get: jest.fn().mockResolvedValue({ data: {} }),
-  };
-  const users = new UserApiClient(reqExecutorMock, '/TestUsers');
-
-  expect.assertions(2);
-  await users.fetch('test_id', ['name', 'emails']);
-  const [, actualConfig] = reqExecutorMock.get.mock.calls[0];
-  expect(actualConfig.params).toBeInstanceOf(IonicUrlParams);
-  expect(actualConfig.params.params.attributes).toBe('name,emails');
+  expect(resourceApiClientMock.getResource).toHaveBeenCalledWith(userId, attrs);
 });
 
 test('can update user', async () => {
-  const userId = 'test_id';
   const expectedResult = {};
-  const reqExecutorMock: any = {
-    put: jest.fn().mockResolvedValue({ data: expectedResult }),
+  const resourceApiClientMock: any = {
+    updateResource: jest.fn().mockResolvedValue(expectedResult),
   };
-  const users = new UserApiClient(reqExecutorMock, '/TestUsers');
+  const users = new UserApiClient(resourceApiClientMock);
 
-  expect.assertions(4);
-  const updateData = { name: { familyName: 'Tester' } };
-  const actualResult = await users.update(userId, updateData);
-  const [actualUrl, actualData, actualConfig] = reqExecutorMock.put.mock.calls[0];
+  const userId = 'test_id';
+  const updateData = { schemas: ['urn:scim:schemas:core:1.0'], name: { familyName: 'Tester' } };
+  const attrs = ['name', 'groups'];
+  const actualResult = await users.update(userId, updateData, attrs);
+
   expect(actualResult).toBe(expectedResult);
-  expect(actualUrl).toBe('/TestUsers/test_id');
-  expect(actualData).toBe(updateData);
-  expect(actualConfig.params).toBeUndefined();
-});
-
-test('can specify attributes to return after update', async () => {
-  const reqExecutorMock: any = {
-    put: jest.fn().mockResolvedValue({ data: {} }),
-  };
-  const users = new UserApiClient(reqExecutorMock, '/TestUsers');
-
-  expect.assertions(2);
-  const updateData = { name: { familyName: 'Tester' } };
-  await users.update('test_id', updateData, ['name', 'groups']);
-  const [, , actualConfig] = reqExecutorMock.put.mock.calls[0];
-  expect(actualConfig.params).toBeInstanceOf(IonicUrlParams);
-  expect(actualConfig.params.params.attributes).toBe('name,groups');
+  expect(resourceApiClientMock.updateResource).toHaveBeenCalledWith(userId, updateData, attrs);
 });
 
 test('can delete user', async () => {
-  const reqExecutorMock: any = {
-    delete: jest.fn().mockResolvedValue({}),
+  const resourceApiClientMock: any = {
+    deleteResource: jest.fn().mockResolvedValue(undefined),
   };
-  const users = new UserApiClient(reqExecutorMock, '/TestUsers');
-  const userId = 'id_to_delete';
+  const users = new UserApiClient(resourceApiClientMock);
 
-  expect.assertions(2);
+  const userId = 'id_to_delete';
   const result = await users.delete(userId);
-  const [actualUrl] = reqExecutorMock.delete.mock.calls[0];
   expect(result).toBeUndefined();
-  expect(actualUrl).toBe('/TestUsers/id_to_delete');
+  expect(resourceApiClientMock.deleteResource).toHaveBeenCalledWith(userId);
 });

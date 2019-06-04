@@ -1,136 +1,73 @@
 import { GroupApiClient, GroupPatchData } from '../../../src/client/apis/scim/groups';
-import { IonicUrlParams } from '../../../src/client/url-params-builder';
 
 test('can create group', async () => {
   const expectedGroup = {
     id: 'test',
   };
-  const reqExecutorMock: any = {
-    post: jest.fn().mockResolvedValue({ data: expectedGroup }),
+  const resourceApiClientMock: any = {
+    createResource: jest.fn().mockResolvedValue(expectedGroup),
   };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
+  const groups = new GroupApiClient(resourceApiClientMock);
 
-  expect.assertions(4);
-
-  const groupData = { displayName: 'Test Group' };
-  const actualGroup = await groups.create(groupData);
-  const [actualUrl, actualData, actualConfig] = reqExecutorMock.post.mock.calls[0];
+  const groupData = { schemas: ['urn:scim:schemas:core:1.0'], displayName: 'Test Group' };
+  const attrs = ['displayName', 'members'];
+  const actualGroup = await groups.create(groupData, attrs);
 
   expect(actualGroup).toBe(expectedGroup);
-  expect(actualUrl).toBe('/TestGroups');
-  expect(actualData).toBe(groupData);
-  expect(actualConfig.params).toBeUndefined();
-});
-
-test('can specify attributes to return after creating group', async () => {
-  const reqExecutorMock: any = {
-    post: jest.fn().mockResolvedValue({ data: {} }),
-  };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
-
-  expect.assertions(2);
-  const groupData = { displayName: 'Test' };
-  await groups.create(groupData, ['displayName', 'members']);
-  const [, , actualConfig] = reqExecutorMock.post.mock.calls[0];
-  expect(actualConfig.params).toBeInstanceOf(IonicUrlParams);
-  expect(actualConfig.params.params.attributes).toBe('displayName,members');
+  expect(resourceApiClientMock.createResource).toHaveBeenCalledWith(groupData, attrs);
 });
 
 test('can list groups', async () => {
   const expectedResult = {};
-  const reqExecutorMock: any = {
-    get: jest.fn().mockResolvedValue({ data: expectedResult }),
+  const resourceApiClientMock: any = {
+    getResourceList: jest.fn().mockResolvedValue(expectedResult),
   };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
+  const groups = new GroupApiClient(resourceApiClientMock);
 
-  expect.assertions(3);
-  const result = await groups.list();
-  const [actualUrl, actualConfig] = reqExecutorMock.get.mock.calls[0];
+  const params = { skip: 1, limit: 10, filter: { name: 'MyGroup' } };
+  const result = await groups.list(params);
+
   expect(result).toBe(expectedResult);
-  expect(actualUrl).toBe('/TestGroups');
-  expect(actualConfig.params).toBeUndefined();
-});
-
-test('can provide search params', async () => {
-  const reqExecutorMock: any = {
-    get: jest.fn().mockResolvedValue({ data: {} }),
-  };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
-  expect.assertions(4);
-  await groups.list({ skip: 1, limit: 10, filter: { name: 'MyGroup' } });
-  const [, actualConfig] = reqExecutorMock.get.mock.calls[0];
-  expect(actualConfig.params).toBeInstanceOf(IonicUrlParams);
-  expect(actualConfig.params.params.skip).toBe(1);
-  expect(actualConfig.params.params.limit).toBe(10);
-  expect(actualConfig.params.params.name).toBe('MyGroup');
+  expect(resourceApiClientMock.getResourceList).toHaveBeenCalledWith(params);
 });
 
 test('can fetch group', async () => {
-  const groupId = 'test_id';
   const expectedGroup = {};
-  const reqExecutorMock: any = {
-    get: jest.fn().mockResolvedValue({ data: expectedGroup }),
+  const resourceApiClientMock: any = {
+    getResource: jest.fn().mockResolvedValue(expectedGroup),
   };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
+  const groups = new GroupApiClient(resourceApiClientMock);
 
-  expect.assertions(3);
-  const actualGroup = await groups.fetch(groupId);
-  const [actualUrl, actualConfig] = reqExecutorMock.get.mock.calls[0];
+  const groupId = 'test_id';
+  const attrs = ['displayName', 'members'];
+  const actualGroup = await groups.fetch(groupId, attrs);
+
   expect(actualGroup).toBe(expectedGroup);
-  expect(actualUrl).toBe('/TestGroups/test_id');
-  expect(actualConfig.params).toBeUndefined();
-});
-
-test('can specify attributes to return when fetching', async () => {
-  const reqExecutorMock: any = {
-    get: jest.fn().mockResolvedValue({ data: {} }),
-  };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
-
-  expect.assertions(2);
-  await groups.fetch('test_id', ['displayName', 'members']);
-  const [, actualConfig] = reqExecutorMock.get.mock.calls[0];
-  expect(actualConfig.params).toBeInstanceOf(IonicUrlParams);
-  expect(actualConfig.params.params.attributes).toBe('displayName,members');
+  expect(resourceApiClientMock.getResource).toHaveBeenCalledWith(groupId, attrs);
 });
 
 test('can update group', async () => {
-  const groupId = 'test_id';
   const expectedResult = {};
-  const reqExecutorMock: any = {
-    put: jest.fn().mockResolvedValue({ data: expectedResult }),
+  const resourceApiClientMock: any = {
+    updateResource: jest.fn().mockResolvedValue(expectedResult),
   };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
+  const groups = new GroupApiClient(resourceApiClientMock);
 
-  expect.assertions(4);
+  const groupId = 'test_id';
   const groupData = { schemas: ['urn:scim:schemas:core:1.0'], displayName: 'Updated Group' };
-  const actualResult = await groups.update(groupId, groupData);
-  const [actualUrl, actualData, actualConfig] = reqExecutorMock.put.mock.calls[0];
+  const attrs = ['displayName', 'members'];
+  const actualResult = await groups.update(groupId, groupData, attrs);
+
   expect(actualResult).toBe(expectedResult);
-  expect(actualUrl).toBe('/TestGroups/test_id');
-  expect(actualData).toBe(groupData);
-  expect(actualConfig.params).toBeUndefined();
-});
-
-test('can specify attributes to return after update', async () => {
-  const reqExecutorMock: any = {
-    put: jest.fn().mockResolvedValue({ data: {} }),
-  };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
-
-  expect.assertions(2);
-  const updateData = { schemas: ['urn:scim:schemas:core:1.0'], displayName: 'Updated Group' };
-  await groups.update('test_id', updateData, ['displayName', 'members']);
-  const [, , actualConfig] = reqExecutorMock.put.mock.calls[0];
-  expect(actualConfig.params).toBeInstanceOf(IonicUrlParams);
-  expect(actualConfig.params.params.attributes).toBe('displayName,members');
+  expect(resourceApiClientMock.updateResource).toHaveBeenCalledWith(groupId, groupData, attrs);
 });
 
 test('can patch group', async () => {
-  const reqExecutorMock: any = {
-    patch: jest.fn().mockResolvedValue({}),
+  const resourceApiClientMock: any = {
+    patchResource: jest.fn().mockResolvedValue(undefined),
   };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
+  const groups = new GroupApiClient(resourceApiClientMock);
+
   const groupId = 'test_id';
   const patchData: GroupPatchData = {
     schemas: ['urn:scim:schemas:core:1.0', 'urn:scim:schemas:extension:ionic:1.0'],
@@ -146,14 +83,10 @@ test('can patch group', async () => {
     displayName: 'NewDisplayName',
   };
 
-  expect.assertions(4);
   const patchResult = await groups.patch(groupId, patchData);
-  const [actualUrl, actualData, actualConfig] = reqExecutorMock.patch.mock.calls[0];
-  // If the attributes parameter is not included, then no content is returned.
+
   expect(patchResult).toBeUndefined();
-  expect(actualUrl).toBe('/TestGroups/test_id');
-  expect(actualData).toBe(patchData);
-  expect(actualConfig.params).toBeUndefined();
+  expect(resourceApiClientMock.patchResource).toHaveBeenCalledWith(groupId, patchData, undefined);
 });
 
 test('can specify attributes to return after patching', async () => {
@@ -166,10 +99,12 @@ test('can specify attributes to return after patching', async () => {
       },
     ],
   };
-  const reqExecutorMock: any = {
-    patch: jest.fn().mockResolvedValue({ data: expectedResult }),
+  const resourceApiClientMock: any = {
+    patchResource: jest.fn().mockResolvedValue(expectedResult),
   };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
+  const groups = new GroupApiClient(resourceApiClientMock);
+
+  const groupId = 'test_id';
   const patchData: GroupPatchData = {
     schemas: ['urn:scim:schemas:core:1.0', 'urn:scim:schemas:extension:ionic:1.0'],
     meta: {
@@ -177,26 +112,23 @@ test('can specify attributes to return after patching', async () => {
     },
     members: [{ display: 'Jane Doe', value: '4444444444444444444444' }],
   };
+  const attrs = ['displayName', 'members'];
 
-  expect.assertions(4);
-  const actualResult = await groups.patch('test_id', patchData, ['displayName', 'members']);
-  const [, actualData, actualConfig] = reqExecutorMock.patch.mock.calls[0];
+  const actualResult = await groups.patch(groupId, patchData, attrs);
+
   expect(actualResult).toBe(expectedResult);
-  expect(actualData).toBe(patchData);
-  expect(actualConfig.params).toBeInstanceOf(IonicUrlParams);
-  expect(actualConfig.params.params.attributes).toBe('displayName,members');
+  expect(resourceApiClientMock.patchResource).toHaveBeenCalledWith(groupId, patchData, attrs);
 });
 
 test('can delete group', async () => {
-  const reqExecutorMock: any = {
-    delete: jest.fn().mockResolvedValue({}),
+  const resourceApiClientMock: any = {
+    deleteResource: jest.fn().mockResolvedValue(undefined),
   };
-  const groups = new GroupApiClient(reqExecutorMock, '/TestGroups');
-  const groupId = 'id_to_delete';
+  const groups = new GroupApiClient(resourceApiClientMock);
 
-  expect.assertions(2);
+  const groupId = 'id_to_delete';
   const result = await groups.delete(groupId);
-  const [actualUrl] = reqExecutorMock.delete.mock.calls[0];
+
   expect(result).toBeUndefined();
-  expect(actualUrl).toBe('/TestGroups/id_to_delete');
+  expect(resourceApiClientMock.deleteResource).toHaveBeenCalledWith(groupId);
 });

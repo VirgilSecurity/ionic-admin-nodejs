@@ -3,6 +3,7 @@ export interface ResourceMeta {
   lastModified: string;
   location: string;
   version: string;
+  deleted?: boolean;
 }
 
 export interface Resource {
@@ -65,4 +66,17 @@ export interface DeviceResource extends Resource {
     userAttributes: { [key: string]: any };
     userAttributeSigB64: string;
   };
+}
+
+export interface RoleResource extends Resource {
+  name?: string;
+  displayName?: string;
+  description?: string;
+  scopes?: string[];
+  active?: boolean;
+  readOnly?: boolean;
+}
+
+export interface ResourceData {
+  schemas: string[];
 }

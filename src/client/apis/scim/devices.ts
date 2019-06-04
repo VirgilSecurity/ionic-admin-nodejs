@@ -1,45 +1,41 @@
-import ApiClient from '../api-client';
-import { GroupResource, ResourceList } from './resources';
-import { buildUrlParams, QueryParams, ResourceFilterParams } from '../../url-params-builder';
+import ResourceApiClient from '../resource-api-client';
+import { ResourceList, DeviceResource, ResourceData } from './resources';
+import { QueryParams, ResourceFilterParams } from '../../url-params-builder';
 
-export interface DeviceData {
-  schemas: string[];
+export interface DeviceData extends ResourceData {
   name?: string;
   status?: boolean;
   subjectAttributes?: { type: string; value: string }[];
 }
 
 export interface DeviceFilterParams extends ResourceFilterParams {
-  name: string;
-  status: boolean;
-  userId: string;
-  createdTs: number;
-  updatedTs: number;
+  name?: string;
+  status?: boolean;
+  userId?: string;
+  createdTs?: number;
+  updatedTs?: number;
 }
 
-export class DeviceApiClient extends ApiClient {
-  async list(params?: QueryParams<DeviceFilterParams>): Promise<ResourceList<GroupResource>> {
-    const response = await this.requestExecutor.get<ResourceList<GroupResource>>(this.prefix, {
-      params: params ? buildUrlParams(params) : undefined,
-    });
-    return response.data;
+export class DeviceApiClient {
+  private readonly _client: ResourceApiClient<DeviceResource, DeviceFilterParams>;
+
+  constructor(resourceApiClient: ResourceApiClient<DeviceResource, DeviceFilterParams>) {
+    this._client = resourceApiClient;
   }
 
-  async fetch(deviceId: string, attributesToReturn?: string[]): Promise<GroupResource> {
-    const response = await this.requestExecutor.get<GroupResource>(this.prefix + '/' + deviceId, {
-      params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,
-    });
-    return response.data;
+  list(params?: QueryParams<DeviceFilterParams>): Promise<ResourceList<DeviceResource>> {
+    return this._client.getResourceList(params);
   }
 
-  async update(deviceId: string, deviceData: DeviceData, attributesToReturn?: string[]): Promise<GroupResource> {
-    const response = await this.requestExecutor.put<GroupResource>(this.prefix + '/' + deviceId, deviceData, {
-      params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,
-    });
-    return response.data;
+  fetch(deviceId: string, attributesToReturn?: string[]): Promise<DeviceResource> {
+    return this._client.getResource(deviceId, attributesToReturn);
   }
 
-  async delete(deviceId: string): Promise<void> {
-    await this.requestExecutor.delete(this.prefix + '/' + deviceId);
+  update(deviceId: string, deviceData: DeviceData, attributesToReturn?: string[]): Promise<DeviceResource> {
+    return this._client.updateResource(deviceId, deviceData, attributesToReturn);
+  }
+
+  delete(deviceId: string): Promise<void> {
+    return this._client.deleteResource(deviceId);
   }
 }
