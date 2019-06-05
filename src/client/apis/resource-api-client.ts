@@ -1,8 +1,8 @@
 import RequestExecutor from '../request-executor';
-import { buildUrlParams, QueryParams, ResourceFilterParams } from '../url-params-builder';
-import { ResourceList, Resource, ResourceData } from './scim/resources';
+import { FilterParams } from '../url-params-serializer';
+import { ResourceList, Resource, ResourceData, ResourceQueryParams } from './scim/resources';
 
-export default class ResourceApiClient<TResource extends Resource, TFilterParams extends ResourceFilterParams> {
+export default class ResourceApiClient<TResource extends Resource, TFilterParams extends FilterParams> {
   private readonly _requestExecutor: RequestExecutor;
   private readonly _prefix: string;
 
@@ -16,21 +16,21 @@ export default class ResourceApiClient<TResource extends Resource, TFilterParams
     attributesToReturn?: string[],
   ): Promise<TResource> {
     const response = await this._requestExecutor.post<TResource>(this._prefix, resourceData, {
-      params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,
+      params: attributesToReturn ? { attributes: attributesToReturn } : undefined,
     });
     return response.data;
   }
 
-  async getResourceList(params?: QueryParams<TFilterParams>): Promise<ResourceList<TResource>> {
+  async getResourceList(params?: ResourceQueryParams<TFilterParams>): Promise<ResourceList<TResource>> {
     const response = await this._requestExecutor.get<ResourceList<TResource>>(this._prefix, {
-      params: params ? buildUrlParams(params) : undefined,
+      params: params,
     });
     return response.data;
   }
 
   async getResource(resourceId: string, attributesToReturn?: string[]): Promise<TResource> {
     const response = await this._requestExecutor.get<TResource>(this._prefix + '/' + resourceId, {
-      params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,
+      params: attributesToReturn ? { attributes: attributesToReturn } : undefined,
     });
     return response.data;
   }
@@ -41,7 +41,7 @@ export default class ResourceApiClient<TResource extends Resource, TFilterParams
     attributesToReturn?: string[],
   ): Promise<TResource> {
     const response = await this._requestExecutor.put<TResource>(this._prefix + '/' + resourceId, resourceData, {
-      params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,
+      params: attributesToReturn ? { attributes: attributesToReturn } : undefined,
     });
     return response.data;
   }
@@ -52,7 +52,7 @@ export default class ResourceApiClient<TResource extends Resource, TFilterParams
     attributesToReturn?: string[],
   ): Promise<any> {
     const response = await this._requestExecutor.patch<TResource>(this._prefix + '/' + resourceId, patchData, {
-      params: attributesToReturn ? buildUrlParams({ attributes: attributesToReturn }) : undefined,
+      params: attributesToReturn ? { attributes: attributesToReturn } : undefined,
     });
     if (attributesToReturn) {
       return response.data;

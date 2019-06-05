@@ -1,8 +1,8 @@
 import ResourceApiClient from '../resource-api-client';
-import { ResourceList, RoleResource, ResourceData } from './resources';
-import { QueryParams, ResourceFilterParams } from '../../url-params-builder';
+import { ResourceList, RoleResource, ResourceData, ResourceQueryParams } from './resources';
+import { FilterParams } from '../../url-params-serializer';
 
-export interface RoleFilterParams extends ResourceFilterParams {
+export interface RoleFilterParams extends FilterParams {
   name?: string;
   createdTs?: number;
   updatedTs?: number;
@@ -33,7 +33,7 @@ export class RoleApiClient {
     return this._client.createResource(roleData);
   }
 
-  list(params?: QueryParams<RoleFilterParams>): Promise<ResourceList<RoleResource>> {
+  list(params?: ResourceQueryParams<RoleFilterParams>): Promise<ResourceList<RoleResource>> {
     return this._client.getResourceList(params);
   }
 

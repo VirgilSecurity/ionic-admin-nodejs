@@ -1,6 +1,6 @@
 import ResourceApiClient from '../resource-api-client';
-import { UserResource, ResourceList, ResourceData } from './resources';
-import { ResourceFilterParams, QueryParams } from '../../url-params-builder';
+import { UserResource, ResourceList, ResourceData, ResourceQueryParams } from './resources';
+import { FilterParams } from '../../url-params-serializer';
 
 export interface UserData extends ResourceData {
   name: { givenName?: string; familyName?: string; formatted?: string };
@@ -11,7 +11,7 @@ export interface UserData extends ResourceData {
   [schema: string]: any;
 }
 
-export interface UserFilterParams extends ResourceFilterParams {
+export interface UserFilterParams extends FilterParams {
   domainUpn?: string;
   email?: string | string[];
   enabled?: boolean;
@@ -33,7 +33,7 @@ export class UserApiClient {
     return this._client.createResource(userData, attributesToReturn);
   }
 
-  list(params?: QueryParams<UserFilterParams>): Promise<ResourceList<UserResource>> {
+  list(params?: ResourceQueryParams<UserFilterParams>): Promise<ResourceList<UserResource>> {
     return this._client.getResourceList(params);
   }
 

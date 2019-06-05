@@ -55,7 +55,7 @@ describe('RequestExecutor', () => {
     spy.mockRestore();
   });
 
-  it("should throw 'IonicApiError' with 'status', 'data' and 'message' when response is not 2xx", async () => {
+  test("should throw 'IonicApiError' with 'status', 'data' and 'message' when response is not 2xx", async () => {
     const url = '/test';
     const status = 500;
     const message = 'something went wrong';
@@ -78,7 +78,7 @@ describe('RequestExecutor', () => {
     }
   });
 
-  it("should throw 'Error' when no response was received", async () => {
+  test("should throw 'Error' when no response was received", async () => {
     const url = '/test';
     const executor = new RequestExecutor({
       baseUrl,
@@ -97,7 +97,7 @@ describe('RequestExecutor', () => {
     }
   });
 
-  it("should throw 'Error' on network error", async () => {
+  test("should throw 'Error' on network error", async () => {
     const url = '/test';
     const executor = new RequestExecutor({
       baseUrl,

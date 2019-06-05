@@ -1,8 +1,8 @@
 import createAuthentication from './auth/create-authentication';
 import { AuthOptions } from './auth/authentication';
 import RequestExecutor from './request-executor';
-import { paramsSerializer } from './url-params-builder';
 import { ScimApiClient } from './apis/scim-api-client';
+import { scimUrlParamsSerializer } from './apis/scim/scim-url-params-serializer';
 
 export interface IonicApiClientParams {
   baseUrl: string;
@@ -17,7 +17,7 @@ export default class IonicApiClient {
     const requestExecutor = new RequestExecutor({
       baseUrl: baseUrl + '/v2/' + tenantId,
       authentication: createAuthentication(auth),
-      paramsSerializer,
+      paramsSerializer: scimUrlParamsSerializer,
     });
     this.scim = new ScimApiClient(requestExecutor);
   }

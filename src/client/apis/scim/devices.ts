@@ -1,6 +1,6 @@
 import ResourceApiClient from '../resource-api-client';
-import { ResourceList, DeviceResource, ResourceData } from './resources';
-import { QueryParams, ResourceFilterParams } from '../../url-params-builder';
+import { ResourceList, DeviceResource, ResourceData, ResourceQueryParams } from './resources';
+import { FilterParams } from '../../url-params-serializer';
 
 export interface DeviceData extends ResourceData {
   name?: string;
@@ -8,7 +8,7 @@ export interface DeviceData extends ResourceData {
   subjectAttributes?: { type: string; value: string }[];
 }
 
-export interface DeviceFilterParams extends ResourceFilterParams {
+export interface DeviceFilterParams extends FilterParams {
   name?: string;
   status?: boolean;
   userId?: string;
@@ -23,7 +23,7 @@ export class DeviceApiClient {
     this._client = resourceApiClient;
   }
 
-  list(params?: QueryParams<DeviceFilterParams>): Promise<ResourceList<DeviceResource>> {
+  list(params?: ResourceQueryParams<DeviceFilterParams>): Promise<ResourceList<DeviceResource>> {
     return this._client.getResourceList(params);
   }
 

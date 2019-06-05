@@ -1,3 +1,5 @@
+import { QueryParams } from '../../url-params-serializer';
+
 export interface ResourceMeta {
   created: string;
   lastModified: string;
@@ -79,4 +81,8 @@ export interface RoleResource extends Resource {
 
 export interface ResourceData {
   schemas: string[];
+}
+
+export interface ResourceQueryParams<TFilterParams> extends QueryParams<TFilterParams> {
+  attributes?: string[];
 }

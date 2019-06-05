@@ -1,6 +1,6 @@
 import ResourceApiClient from '../resource-api-client';
-import { GroupResource, ResourceList, ResourceData } from './resources';
-import { QueryParams, ResourceFilterParams } from '../../url-params-builder';
+import { GroupResource, ResourceList, ResourceData, ResourceQueryParams } from './resources';
+import { FilterParams } from '../../url-params-serializer';
 
 export interface GroupData extends ResourceData {
   externalId?: string;
@@ -16,7 +16,7 @@ export interface GroupPatchData extends ResourceData {
   meta?: { attributes: string[] };
 }
 
-export interface GroupFilterParams extends ResourceFilterParams {
+export interface GroupFilterParams extends FilterParams {
   externalId?: string;
   description?: string;
   name?: string;
@@ -35,7 +35,7 @@ export class GroupApiClient {
     return this._client.createResource(groupData, attributesToReturn);
   }
 
-  list(params?: QueryParams<GroupFilterParams>): Promise<ResourceList<GroupResource>> {
+  list(params?: ResourceQueryParams<GroupFilterParams>): Promise<ResourceList<GroupResource>> {
     return this._client.getResourceList(params);
   }
 
