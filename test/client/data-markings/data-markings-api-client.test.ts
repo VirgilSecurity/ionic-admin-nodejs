@@ -9,7 +9,7 @@ const reqExecutorMock = {
 const markings = new DataMarkingApiClient(reqExecutorMock as any);
 
 afterEach(() => {
-  Object.values(reqExecutorMock).forEach(mock => (mock as jest.Mock).mockReset());
+  Object.values(reqExecutorMock).forEach(mock => mock.mockReset());
 });
 
 test('can create data marking', async () => {

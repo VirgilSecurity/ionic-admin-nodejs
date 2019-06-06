@@ -1,13 +1,35 @@
 import RequestExecutor from '../../request-executor';
-import {
-  DataMarking,
-  DataMarkingQueryParams,
-  DataMarkingList,
-  DataMarkingValueFilterParams,
-  DataMarkingValueList,
-  DataMarkingValue,
-} from './types';
-import { QueryParams } from '../../url-params-serializer';
+import { DataMarking, DataMarkingValue } from './types';
+import { QueryParams, FilterParams } from '../../url-params-serializer';
+
+interface ListResponse {
+  totalResults: number;
+  skip: number;
+  limit: number;
+}
+
+export interface DataMarkingList extends ListResponse {
+  Resources: DataMarking[];
+}
+
+export interface DataMarkingValueList extends ListResponse {
+  Resources: DataMarkingValue[];
+}
+
+export interface DataMarkingFilterParams extends FilterParams {
+  description?: string;
+  name?: string;
+  public?: boolean;
+}
+
+export interface DataMarkingValueFilterParams extends FilterParams {
+  description?: string;
+  name?: string;
+}
+
+export interface DataMarkingQueryParams extends QueryParams<DataMarkingFilterParams> {
+  valueLimit?: number;
+}
 
 export interface DataMarkingData {
   name: string;
