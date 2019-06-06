@@ -3,6 +3,8 @@ import { AuthOptions } from './auth/authentication';
 import RequestExecutor from './request-executor';
 import { ScimApiClient } from './apis/scim-api-client';
 import { scimUrlParamsSerializer } from './apis/scim/scim-url-params-serializer';
+import { DataMarkingApiClient } from './apis/data-markings/data-markings-api-client';
+import { urlParamsSerializer } from './url-params-serializer';
 
 export interface IonicApiClientParams {
   baseUrl: string;
@@ -12,13 +14,26 @@ export interface IonicApiClientParams {
 
 export default class IonicApiClient {
   readonly scim: ScimApiClient;
+  readonly dataMarkings: DataMarkingApiClient;
 
   constructor({ baseUrl, tenantId, auth }: IonicApiClientParams) {
-    const requestExecutor = new RequestExecutor({
-      baseUrl: baseUrl + '/v2/' + tenantId,
-      authentication: createAuthentication(auth),
-      paramsSerializer: scimUrlParamsSerializer,
-    });
-    this.scim = new ScimApiClient(requestExecutor);
+    const tenantBaseUrl = baseUrl + '/v2/' + tenantId;
+    const authentication = createAuthentication(auth);
+
+    this.scim = new ScimApiClient(
+      new RequestExecutor({
+        authentication,
+        baseUrl: tenantBaseUrl,
+        paramsSerializer: scimUrlParamsSerializer,
+      }),
+    );
+
+    this.dataMarkings = new DataMarkingApiClient(
+      new RequestExecutor({
+        authentication,
+        baseUrl: tenantBaseUrl,
+        paramsSerializer: urlParamsSerializer,
+      }),
+    );
   }
 }
