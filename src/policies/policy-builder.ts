@@ -1,3 +1,5 @@
+import { XacmlBooleanExpression } from './xacml/data-types';
+
 interface JsonPolicyBuilder {
   toJson(): any;
 }
@@ -33,9 +35,8 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
     return this;
   }
 
-  appliesTo(condition: any): RuleBuilder {
-    const target = new Target();
-    target.setCondition(condition);
+  appliesTo(condition: XacmlBooleanExpression): RuleBuilder {
+    const target = new Target(condition);
     this.policy.setTarget(target);
     return this;
   }
@@ -56,7 +57,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
     return this;
   }
 
-  allowIf(condition: any): MultipleRuleBuilder {
+  allowIf(condition: XacmlBooleanExpression): MultipleRuleBuilder {
     const rule = new Rule();
     rule.setEffect(Rule.Allow);
     rule.setCondition(condition);
@@ -64,7 +65,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
     return this;
   }
 
-  denyIf(condition: any): MultipleRuleBuilder {
+  denyIf(condition: XacmlBooleanExpression): MultipleRuleBuilder {
     const rule = new Rule();
     rule.setEffect(Rule.Deny);
     rule.setCondition(condition);
@@ -95,20 +96,22 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
 
 class Policy {
   private readonly _data: any;
+  private _target?: Target;
+  private _rules?: Rule[];
+
   constructor({
     policyId,
     ruleCombiningAlgId,
     enabled,
   }: {
     policyId: string;
-    ruleCombiningAlgId: string;
-    enabled: boolean;
+    ruleCombiningAlgId?: string;
+    enabled?: boolean;
   }) {
     this._data = {
       policyId,
       ruleCombiningAlgId,
       enabled,
-      rules: [],
     };
   }
 
@@ -117,25 +120,46 @@ class Policy {
   }
 
   setTarget(target: Target) {
-    this._data.target = target;
+    this._target = target;
   }
 
   addRule(rule: Rule) {
-    this._data.rules.push(rule);
+    const rules = this._rules || (this._rules = []);
+    rules.push(rule);
   }
 
   toJson() {
-    return this._data;
+    const result = {
+      ...this._data,
+    };
+
+    if (this._target) {
+      result.target = this._target.toJson();
+    }
+
+    if (this._rules) {
+      result.rules = this._rules.map(r => r.toJson());
+    }
+
+    return result;
   }
 }
 
 class Target {
-  setCondition(condition: any) {}
+  private readonly _condition: XacmlBooleanExpression;
+
+  constructor(condition: XacmlBooleanExpression) {
+    this._condition = condition;
+  }
+
+  toJson() {
+    return { condition: this._condition.toJson() };
+  }
 }
 
 class Rule {
   static get Allow() {
-    return 'Allow';
+    return 'Permit';
   }
 
   static get Deny() {
@@ -144,7 +168,7 @@ class Rule {
 
   private effect: string = '';
   private description: string = '';
-  private condition: any;
+  private condition?: XacmlBooleanExpression;
 
   setEffect(effect: string) {
     this.effect = effect;
@@ -154,7 +178,26 @@ class Rule {
     this.description = description;
   }
 
-  setCondition(condition: any) {
+  setCondition(condition: XacmlBooleanExpression) {
     this.condition = condition;
   }
+
+  toJson() {
+    const result: any = {
+      effect: this.effect,
+      description: this.description,
+    };
+    if (this.condition) {
+      result.condition = this.condition.toJson();
+    }
+    return result;
+  }
+}
+
+export default function createPolicy(data: {
+  policyId: string;
+  ruleCombiningAlgId?: string;
+  enabled?: boolean;
+}): ConditionBuilder {
+  return new PolicyBuilder(new Policy(data));
 }
