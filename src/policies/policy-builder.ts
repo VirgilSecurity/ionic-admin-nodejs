@@ -1,25 +1,25 @@
-import { XacmlBooleanExpression } from './xacml/data-types';
+import { XacmlBooleanFunction } from './xacml/data-types';
 
 interface JsonPolicyBuilder {
   toJson(): any;
 }
 
 interface RuleBuilder {
-  allowIf(condition: any): MultipleRuleBuilder;
-  denyIf(condition: any): MultipleRuleBuilder;
+  allowIf(condition: XacmlBooleanFunction): MultipleRuleBuilder;
+  denyIf(condition: XacmlBooleanFunction): MultipleRuleBuilder;
   alwaysAllow(): JsonPolicyBuilder;
   alwaysDeny(): JsonPolicyBuilder;
 }
 
 interface MultipleRuleBuilder {
-  allowIf(condition: any): MultipleRuleBuilder;
-  denyIf(condition: any): MultipleRuleBuilder;
+  allowIf(condition: XacmlBooleanFunction): MultipleRuleBuilder;
+  denyIf(condition: XacmlBooleanFunction): MultipleRuleBuilder;
   allowOtherwise(): JsonPolicyBuilder;
   denyOtherwise(): JsonPolicyBuilder;
 }
 
 interface ConditionBuilder {
-  appliesTo(condition: any): RuleBuilder;
+  appliesTo(condition: XacmlBooleanFunction): RuleBuilder;
   appliesToAllData(): RuleBuilder;
 }
 
@@ -35,7 +35,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
     return this;
   }
 
-  appliesTo(condition: XacmlBooleanExpression): RuleBuilder {
+  appliesTo(condition: XacmlBooleanFunction): RuleBuilder {
     const target = new Target(condition);
     this.policy.setTarget(target);
     return this;
@@ -57,7 +57,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
     return this;
   }
 
-  allowIf(condition: XacmlBooleanExpression): MultipleRuleBuilder {
+  allowIf(condition: XacmlBooleanFunction): MultipleRuleBuilder {
     const rule = new Rule();
     rule.setEffect(Rule.Allow);
     rule.setCondition(condition);
@@ -65,7 +65,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
     return this;
   }
 
-  denyIf(condition: XacmlBooleanExpression): MultipleRuleBuilder {
+  denyIf(condition: XacmlBooleanFunction): MultipleRuleBuilder {
     const rule = new Rule();
     rule.setEffect(Rule.Deny);
     rule.setCondition(condition);
@@ -146,9 +146,9 @@ class Policy {
 }
 
 class Target {
-  private readonly _condition: XacmlBooleanExpression;
+  private readonly _condition: XacmlBooleanFunction;
 
-  constructor(condition: XacmlBooleanExpression) {
+  constructor(condition: XacmlBooleanFunction) {
     this._condition = condition;
   }
 
@@ -168,7 +168,7 @@ class Rule {
 
   private effect: string = '';
   private description: string = '';
-  private condition?: XacmlBooleanExpression;
+  private condition?: XacmlBooleanFunction;
 
   setEffect(effect: string) {
     this.effect = effect;
@@ -178,7 +178,7 @@ class Rule {
     this.description = description;
   }
 
-  setCondition(condition: XacmlBooleanExpression) {
+  setCondition(condition: XacmlBooleanFunction) {
     this.condition = condition;
   }
 

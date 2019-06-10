@@ -1,8 +1,8 @@
-export abstract class ExpressionTreeItem {
+export abstract class ConditionExpressionNode {
   abstract toJson(): object;
 }
 
-export class DecisionRequestAttribute extends ExpressionTreeItem {
+export class AttributeDesignator extends ConditionExpressionNode {
   category: string;
   id: string;
 
@@ -20,10 +20,17 @@ export class DecisionRequestAttribute extends ExpressionTreeItem {
   }
 }
 
-export class DecisionRequestStringAttribute extends DecisionRequestAttribute {}
-export class DecisionRequestBooleanAttribute extends DecisionRequestAttribute {}
+export class StringAttributeDesignator extends AttributeDesignator {}
+export class StringBagAttributeDesignator extends AttributeDesignator {}
+export class BooleanAttributeDesignator extends AttributeDesignator {}
+export class DateAttributeDesignator extends AttributeDesignator {}
+export class DateTimeAttributeDesignator extends AttributeDesignator {}
+export class TimeAttributeDesignator extends AttributeDesignator {}
+export class DoubleAttributeDesignator extends AttributeDesignator {}
+export class IntegerAttributeDesignator extends AttributeDesignator {}
+export class IpAddressAtrtributeDesignator extends AttributeDesignator {}
 
-export class LiteralValue<T> extends ExpressionTreeItem {
+export class AttributeValue<T> extends ConditionExpressionNode {
   dataType: string;
   value: T;
 
@@ -36,16 +43,16 @@ export class LiteralValue<T> extends ExpressionTreeItem {
   toJson() {
     return {
       dataType: this.dataType,
-      value: [this.value],
+      value: this.value,
     };
   }
 }
 
-export abstract class XacmlExpression extends ExpressionTreeItem {
+export abstract class XacmlFunction extends ConditionExpressionNode {
   functionId: string;
-  args: ExpressionTreeItem[];
+  args: ConditionExpressionNode[];
 
-  constructor(functionId: string, args: ExpressionTreeItem[]) {
+  constructor(functionId: string, args: ConditionExpressionNode[]) {
     super();
     this.functionId = functionId;
     this.args = args;
@@ -59,6 +66,19 @@ export abstract class XacmlExpression extends ExpressionTreeItem {
   }
 }
 
-export class XacmlStringExpression extends XacmlExpression {}
-
-export class XacmlBooleanExpression extends XacmlExpression {}
+export class XacmlStringFunction extends XacmlFunction {}
+export class XacmlStringBagFunction extends XacmlFunction {}
+export class XacmlBooleanFunction extends XacmlFunction {}
+export class XacmlBooleanBagFunction extends XacmlFunction {}
+export class XacmlIntegerFunction extends XacmlFunction {}
+export class XacmlIntegerBagFunction extends XacmlFunction {}
+export class XacmlDoubleFunction extends XacmlFunction {}
+export class XacmlDoubleBagFunction extends XacmlFunction {}
+export class XacmlTimeFunction extends XacmlFunction {}
+export class XacmlTimeBagFunction extends XacmlFunction {}
+export class XacmlDateFunction extends XacmlFunction {}
+export class XacmlDateBagFunction extends XacmlFunction {}
+export class XacmlDateTimeFunction extends XacmlFunction {}
+export class XacmlDateTimeBagFunction extends XacmlFunction {}
+export class XacmlIpAddressFunction extends XacmlFunction {}
+export class XacmlIpAddressBagFunction extends XacmlFunction {}

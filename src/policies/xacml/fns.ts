@@ -1,30 +1,30 @@
 import {
-  DecisionRequestStringAttribute,
-  XacmlStringExpression,
-  XacmlBooleanExpression,
-  LiteralValue,
-  ExpressionTreeItem,
+  StringAttributeDesignator,
+  XacmlStringFunction,
+  XacmlBooleanFunction,
+  AttributeValue,
+  ConditionExpressionNode,
 } from './data-types';
 
 export function stringEqual(
-  a: DecisionRequestStringAttribute | XacmlStringExpression | string,
-  b: DecisionRequestStringAttribute | XacmlStringExpression | string,
-): XacmlBooleanExpression {
+  a: StringAttributeDesignator | XacmlStringFunction | string,
+  b: StringAttributeDesignator | XacmlStringFunction | string,
+): XacmlBooleanFunction {
   let aTreeItem = anyToTreeItem(a);
   let bTreeItem = anyToTreeItem(b);
-  return new XacmlBooleanExpression('string-equal', [aTreeItem, bTreeItem]);
+  return new XacmlBooleanFunction('string-equal', [aTreeItem, bTreeItem]);
 }
 
 function anyToTreeItem(x: any) {
   if (typeof x === 'string') {
-    return new LiteralValue<string>('string', x);
+    return new AttributeValue<string>('string', x);
   }
 
   if (typeof x === 'boolean') {
-    return new LiteralValue<boolean>('boolean', x);
+    return new AttributeValue<boolean>('boolean', x);
   }
 
-  if (x instanceof ExpressionTreeItem) {
+  if (x instanceof ConditionExpressionNode) {
     return x;
   }
 

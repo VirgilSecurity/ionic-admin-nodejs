@@ -16,7 +16,7 @@ test('can create policy', () => {
     target: {
       condition: {
         functionId: 'string-equal',
-        args: [{ category: 'resource', id: 'classification' }, { dataType: 'string', value: ['topsecret'] }],
+        args: [{ category: 'resource', id: 'classification' }, { dataType: 'string', value: 'topsecret' }],
       },
     },
     rules: [
@@ -25,7 +25,7 @@ test('can create policy', () => {
         description: '',
         condition: {
           functionId: 'string-equal',
-          args: [{ category: 'subject', id: 'group' }, { dataType: 'string', value: ['cia_agents'] }],
+          args: [{ category: 'subject', id: 'group' }, { dataType: 'string', value: 'cia_agents' }],
         },
       },
       {
