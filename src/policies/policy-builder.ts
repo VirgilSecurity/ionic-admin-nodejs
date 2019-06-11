@@ -1,4 +1,4 @@
-import { XacmlBooleanFunction } from './xacml/data-types';
+import { XacmlBooleanFunction } from './xacml/xacml-function';
 
 interface JsonPolicyBuilder {
   toJson(): any;
@@ -38,6 +38,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
   appliesTo(condition: XacmlBooleanFunction): RuleBuilder {
     const target = new Target(condition);
     this.policy.setTarget(target);
+    this.policy.setDescription(condition.getDescription());
     return this;
   }
 
@@ -61,6 +62,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
     const rule = new Rule();
     rule.setEffect(Rule.Allow);
     rule.setCondition(condition);
+    rule.setDescription(condition.getDescription());
     this.policy.addRule(rule);
     return this;
   }
@@ -69,6 +71,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
     const rule = new Rule();
     rule.setEffect(Rule.Deny);
     rule.setCondition(condition);
+    rule.setDescription(condition.getDescription());
     this.policy.addRule(rule);
     return this;
   }

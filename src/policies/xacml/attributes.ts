@@ -2,12 +2,12 @@ import {
   StringAttributeDesignator,
   DateTimeAttributeDesignator,
   BooleanAttributeDesignator,
-  IpAddressAtrtributeDesignator,
+  IpAddressAttributeDesignator,
   DoubleAttributeDesignator,
   DateAttributeDesignator,
   TimeAttributeDesignator,
   StringBagAttributeDesignator,
-} from './data-types';
+} from './attribute-designator';
 
 export const Attributes = {
   resource: {
@@ -25,7 +25,7 @@ export const Attributes = {
     createdIonicEnrollmentSourceName: new StringAttributeDesignator('resource', 'created-ionic-enrollment-source-name'),
     createdIonicEnrollmentSourceType: new StringAttributeDesignator('resource', 'created-ionic-enrollment-source-type'),
     createdIonicIsDelegated: new BooleanAttributeDesignator('resource', 'created-ionic-is-delegated'),
-    createdIpAddress: new IpAddressAtrtributeDesignator('resource', 'created-ipAddress'),
+    createdIpAddress: new IpAddressAttributeDesignator('resource', 'created-ipAddress'),
     createdLocationCity: new StringAttributeDesignator('resource', 'created-location-city'),
     createdLocationCountry: new StringAttributeDesignator('resource', 'created-location-country'),
     createdLocationLatitude: new DoubleAttributeDesignator('resource', 'created-location-latitude'),
@@ -103,7 +103,7 @@ export const Attributes = {
     ionicApplicationVersion: new StringAttributeDesignator('environment', 'ionic-application-version'),
     ionicClientType: new StringAttributeDesignator('environment', 'ionic-client-type'),
     ionicClientVersion: new StringAttributeDesignator('environment', 'ionic-client-version'),
-    ionicDelegatorIpAddress: new IpAddressAtrtributeDesignator('environment', 'ionic-delegator-ipAddress'),
+    ionicDelegatorIpAddress: new IpAddressAttributeDesignator('environment', 'ionic-delegator-ipAddress'),
     ionicDelegatorLocationCity: new StringAttributeDesignator('environment', 'ionic-delegator-location-city'),
     ionicDelegatorLocationCountry: new StringAttributeDesignator('environment', 'ionic-delegator-location-country'),
     ionicDelegatorLocationLatitude: new DoubleAttributeDesignator('environment', 'ionic-delegator-location-latitude'),
@@ -118,7 +118,7 @@ export const Attributes = {
     ionicMarkingIds: new StringBagAttributeDesignator('environment', 'ionic-marking-ids'),
     ionicOsName: new StringAttributeDesignator('environment', 'ionic-os-name'),
     ionicOsVersion: new StringAttributeDesignator('environment', 'ionic-os-version'),
-    ipAddress: new IpAddressAtrtributeDesignator('environment', 'ipAddress'),
+    ipAddress: new IpAddressAttributeDesignator('environment', 'ipAddress'),
     locationCity: new StringAttributeDesignator('environment', 'location-city'),
     locationCountry: new StringAttributeDesignator('environment', 'location-country'),
     locationLatitude: new DoubleAttributeDesignator('environment', 'location-latitude'),
