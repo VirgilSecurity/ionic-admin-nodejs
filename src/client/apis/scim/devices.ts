@@ -23,19 +23,19 @@ export class DeviceApiClient {
     this._client = resourceApiClient;
   }
 
-  list(params?: ResourceQueryParams<DeviceFilterParams>): Promise<ResourceList<DeviceResource>> {
+  listDevices(params?: ResourceQueryParams<DeviceFilterParams>): Promise<ResourceList<DeviceResource>> {
     return this._client.getResourceList(params);
   }
 
-  fetch(deviceId: string, attributesToReturn?: string[]): Promise<DeviceResource> {
+  fetchDevice(deviceId: string, attributesToReturn?: string[]): Promise<DeviceResource> {
     return this._client.getResource(deviceId, attributesToReturn);
   }
 
-  update(deviceId: string, deviceData: DeviceData, attributesToReturn?: string[]): Promise<DeviceResource> {
+  updateDevice(deviceId: string, deviceData: DeviceData, attributesToReturn?: string[]): Promise<DeviceResource> {
     return this._client.updateResource(deviceId, deviceData, attributesToReturn);
   }
 
-  delete(deviceId: string): Promise<void> {
+  deleteDevice(deviceId: string): Promise<void> {
     return this._client.deleteResource(deviceId);
   }
 }

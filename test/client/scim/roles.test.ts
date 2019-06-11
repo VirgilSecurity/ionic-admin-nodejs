@@ -8,7 +8,7 @@ test('can create role', async () => {
   const client = new RoleApiClient(resourceApiClientMock);
 
   const roleData = { schemas: ['urn:scim:schemas:core:1.0'], name: 'MyRole' };
-  const role = await client.create(roleData);
+  const role = await client.createRole(roleData);
 
   expect(role).toBe(expectedRole);
   expect(resourceApiClientMock.createResource).toHaveBeenCalledWith(roleData);
@@ -22,7 +22,7 @@ test('can get role list', async () => {
   const client = new RoleApiClient(resourceApiClientMock);
 
   const params = { skip: 1 };
-  const roleList = await client.list(params);
+  const roleList = await client.listRoles(params);
 
   expect(roleList).toBe(expectedResult);
   expect(resourceApiClientMock.getResourceList).toHaveBeenCalledWith(params);
@@ -36,7 +36,7 @@ test('can get role by id', async () => {
   const client = new RoleApiClient(resourceApiClientMock);
 
   const roleId = 'test_id';
-  const role = await client.fetch(roleId);
+  const role = await client.fetchRole(roleId);
 
   expect(role).toBe(expectedResult);
   expect(resourceApiClientMock.getResource).toHaveBeenCalledWith(roleId);
@@ -51,7 +51,7 @@ test('can update role', async () => {
 
   const roleId = 'test_id';
   const roleData = { schemas: ['urn:scim:schemas:core:1.0'], name: 'NewName' };
-  const updatedRole = await client.update(roleId, roleData);
+  const updatedRole = await client.updateRole(roleId, roleData);
 
   expect(updatedRole).toBe(expectedResult);
   expect(resourceApiClientMock.updateResource).toHaveBeenCalledWith(roleId, roleData);
@@ -64,7 +64,7 @@ test('can delete role', async () => {
   const client = new RoleApiClient(resourceApiClientMock);
 
   const roleId = 'test_id';
-  const result = await client.delete(roleId);
+  const result = await client.deleteRole(roleId);
 
   expect(result).toBeUndefined();
   expect(resourceApiClientMock.deleteResource).toHaveBeenCalledWith(roleId);

@@ -29,23 +29,23 @@ export class UserApiClient {
     this._client = resourceApiClient;
   }
 
-  create(userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
+  createUser(userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
     return this._client.createResource(userData, attributesToReturn);
   }
 
-  list(params?: ResourceQueryParams<UserFilterParams>): Promise<ResourceList<UserResource>> {
+  listUsers(params?: ResourceQueryParams<UserFilterParams>): Promise<ResourceList<UserResource>> {
     return this._client.getResourceList(params);
   }
 
-  fetch(userId: string, attributesToReturn?: string[]): Promise<UserResource> {
+  fetchUser(userId: string, attributesToReturn?: string[]): Promise<UserResource> {
     return this._client.getResource(userId, attributesToReturn);
   }
 
-  update(userId: string, userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
+  updateUser(userId: string, userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
     return this._client.updateResource(userId, userData, attributesToReturn);
   }
 
-  delete(userId: string): Promise<void> {
+  deleteUser(userId: string): Promise<void> {
     return this._client.deleteResource(userId);
   }
 }

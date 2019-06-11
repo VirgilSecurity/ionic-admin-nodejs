@@ -29,23 +29,23 @@ export class RoleApiClient {
     this._client = resourceApiClient;
   }
 
-  create(roleData: RoleData): Promise<RoleResource> {
+  createRole(roleData: RoleData): Promise<RoleResource> {
     return this._client.createResource(roleData);
   }
 
-  list(params?: ResourceQueryParams<RoleFilterParams>): Promise<ResourceList<RoleResource>> {
+  listRoles(params?: ResourceQueryParams<RoleFilterParams>): Promise<ResourceList<RoleResource>> {
     return this._client.getResourceList(params);
   }
 
-  fetch(roleId: string): Promise<RoleResource> {
+  fetchRole(roleId: string): Promise<RoleResource> {
     return this._client.getResource(roleId);
   }
 
-  update(roleId: string, roleData: RoleUpdateData): Promise<RoleResource> {
+  updateRole(roleId: string, roleData: RoleUpdateData): Promise<RoleResource> {
     return this._client.updateResource(roleId, roleData);
   }
 
-  delete(roleId: string): Promise<void> {
+  deleteRole(roleId: string): Promise<void> {
     return this._client.deleteResource(roleId);
   }
 }

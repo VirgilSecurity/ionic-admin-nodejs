@@ -8,7 +8,7 @@ test('can get device list', async () => {
   const devices = new DeviceApiClient(resourceApiClientMock);
 
   const params = { skip: 10, filter: { userId: '123456' } };
-  const result = await devices.list(params);
+  const result = await devices.listDevices(params);
 
   expect(result).toBe(expectedResult);
   expect(resourceApiClientMock.getResourceList).toHaveBeenCalledWith(params);
@@ -23,7 +23,7 @@ test('can fetch device', async () => {
 
   const deviceId = 'test_id';
   const attrs = ['keySpace', 'displayName', 'user'];
-  const actualDevice = await devices.fetch(deviceId, attrs);
+  const actualDevice = await devices.fetchDevice(deviceId, attrs);
 
   expect(actualDevice).toBe(expectedDevice);
   expect(resourceApiClientMock.getResource).toHaveBeenCalledWith(deviceId, attrs);
@@ -40,7 +40,7 @@ test('can update device', async () => {
   const deviceData = { schemas: ['urn:scim:schemas:core:1.0'], name: 'NewDeviceName', status: false };
   const attrs = ['keySpace', 'user'];
 
-  const actualResult = await devices.update(deviceId, deviceData, attrs);
+  const actualResult = await devices.updateDevice(deviceId, deviceData, attrs);
   expect(actualResult).toBe(expectedResult);
   expect(resourceApiClientMock.updateResource).toBeCalledWith(deviceId, deviceData, attrs);
 });
@@ -52,7 +52,7 @@ test('can delete device', async () => {
   const devices = new DeviceApiClient(resourceApiClientMock);
 
   const deviceId = 'id_to_delete';
-  const result = await devices.delete(deviceId);
+  const result = await devices.deleteDevice(deviceId);
   expect(result).toBeUndefined();
   expect(resourceApiClientMock.deleteResource).toHaveBeenCalledWith(deviceId);
 });
