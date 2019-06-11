@@ -10,7 +10,7 @@ import {
 } from '../../src/policies/xacml/fns';
 
 test('create policy to ensure that data classified as top secret is only accessed by trusted guys', () => {
-  const myPolicy = createPolicy({ policyId: 'MyPolicy', enabled: true, ruleCombiningAlgId: 'deny-overrides' })
+  const myPolicy = createPolicy({ policyId: 'MyPolicy', enabled: true, ruleCombiningAlgId: 'first-applicable' })
     .appliesTo(stringEqual(Attributes.resource.classification, 'topsecret'))
     .allowIf(stringEqual(Attributes.subject.groupName, 'trusted_guys'))
     .denyOtherwise()
@@ -18,7 +18,7 @@ test('create policy to ensure that data classified as top secret is only accesse
 
   expect(myPolicy).toEqual({
     policyId: 'MyPolicy',
-    ruleCombiningAlgId: 'deny-overrides',
+    ruleCombiningAlgId: 'first-applicable',
     enabled: true,
     description: 'classification string-equal topsecret',
     target: {
@@ -86,7 +86,7 @@ test('create policy to ensure that marked data is only accessed at least 3 days 
   const myPolicy = createPolicy({
     policyId: 'MyPolicy3',
     enabled: true,
-    ruleCombiningAlgId: 'deny-overrides',
+    ruleCombiningAlgId: 'first-applicable',
   })
     .appliesTo(integerGreaterThan(stringBagSize(Attributes.resource.classification), 0))
     .allowIf(
@@ -100,7 +100,7 @@ test('create policy to ensure that marked data is only accessed at least 3 days 
 
   expect(myPolicy).toEqual({
     policyId: 'MyPolicy3',
-    ruleCombiningAlgId: 'deny-overrides',
+    ruleCombiningAlgId: 'first-applicable',
     enabled: true,
     description: 'string-bag-size classification integer-greater-than 0',
     target: {
