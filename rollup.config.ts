@@ -12,7 +12,7 @@ export default {
   input: 'src/index.ts',
   output: [{ file: pkg.main, format: 'cjs', sourcemap: true }, { file: pkg.module, format: 'es', sourcemap: true }],
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external: builtinModules,
+  external: builtinModules.concat(Object.keys(pkg.dependencies)),
   watch: {
     include: 'src/**',
   },
