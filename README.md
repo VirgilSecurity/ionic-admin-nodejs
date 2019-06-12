@@ -502,3 +502,10 @@ console.log(samlResponse); // xml string
 * Downloads and Metrics APIs?
 * Publish on NPM
 * etc.
+
+## License
+
+This library is released under the [3-clause BSD License](LICENSE).
+
+## Support
+If you'd like extra help from our support team, you can contact us at support.ionicsecurity.com for questions related to account management, restoring or deleting accounts, billing, technical questions about Ionic tech, and feature requests and bug reports.
