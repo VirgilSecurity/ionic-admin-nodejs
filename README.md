@@ -7,16 +7,16 @@
 
 ## Introduction
 
-The Ionic Platform allows any developer to add high-value security to their application. With no background in cryptography, you can quickly and confidently add data protection and management to your application.
+The Ionic Platform allows developers to add high-value security to their application. With no background in cryptography, you can quickly and confidently add data protection and management to your application.
 
-The Ionic Admin SDK enables developers to manage users, groups, markings and data access policies in their tenant. Currently supports [SCIM](https://dev.ionic.com/api/scim), [Markings](https://dev.ionic.com/api/markings) and [Policies](https://dev.ionic.com/api/policies) APIs.
+The Ionic Admin SDK enables developers to manage users, groups, data markings and data access policies in their tenant. Currently supports [SCIM](https://dev.ionic.com/api/scim), [Markings](https://dev.ionic.com/api/markings) and [Policies](https://dev.ionic.com/api/policies) APIs.
 
 ## Installation
 
 This library hasn't been published on npm yet and needs to be installed from GitHub:
 
 ```sh
-npm i github:VirgilSecurity/ionic-admin-nodejs#v0.1.0
+npm i https://github.com/VirgilSecurity/ionic-admin-nodejs/releases/download/v0.1.0/ionic-admin-sdk-0.1.0.tgz
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ const client = new Client({
 
 #### Authentication
 
-Ionic Management API require [authentication](https://dev.ionic.com/api/usage/authentication). In order to use API authentication, an Ionic Administrator account must be created. This account must have access to the API, via the scope `access:api`. Further authorization is required for each operation. For example, if making a request to create a new policy, the user must be assigned to a role that grants permission to create new policies, via the scope `policies:create`.
+Ionic Management API requires [authentication](https://dev.ionic.com/api/usage/authentication). In order to use API authentication, an Ionic Administrator account must be created. This account must have access to the API, via the scope `access:api`. Further authorization is required for each operation. For example, if making a request to create a new policy, the user must be assigned to a role that grants permission to create new policies, via the scope `policies:create`.
 
 There are three supported authentication schemes:
 
@@ -45,7 +45,7 @@ There are three supported authentication schemes:
 * MAC Authentication
 * Basic Authentication
 
-In order to use Bearer authentication, an administrator must first create an API Key. Once created, a "Secret Token" is provided and should be copied and stored securely. The "Secret Token" must be securely provided (i.e. via environment variable) as `auth.secretToken` option to the `Client` constructor along with `auth.type` option equal to `'bearer'`:
+In order to use **Bearer authentication**, an administrator must first create an API Key. Once created, a "Secret Token" is provided and should be copied and stored securely. The "Secret Token" must be securely provided (i.e. via environment variable) as `auth.secretToken` option to the `Client` constructor along with `auth.type` option equal to `'bearer'`:
 
 ```javascript
 const client = new Client({
@@ -58,7 +58,7 @@ const client = new Client({
 });
 ```
 
-For MAC authentication, an API Key must be created. Once created, an "ID" and "Secret" are provided and should be copied and stored securely. These are provided as `auth.apiKeyId` and `auth.apiKeySecret` options to the `Client` constructor along with `auth.type` option equal to `'mac'`:
+For **MAC authentication**, an API Key must be created. Once created, an "ID" and "Secret" are provided and should be copied and stored securely. These are provided as `auth.apiKeyId` and `auth.apiKeySecret` options to the `Client` constructor along with `auth.type` option equal to `'mac'`:
 
 ```javascript
 const client = new Client({
@@ -72,7 +72,7 @@ const client = new Client({
 });
 ```
 
-To use basic authentication, you must create an API Access Account. You can create an API Access Account in the Ionic Administrator Console. This is done by creating a user with the "API Administrator" role. The username and password must be provided as `auth.username` and `auth.password` options to the `Client` constructor along with `auth.type` option equal to `'basic'`:
+To use **basic authentication**, you must create an API Access Account. You can create an API Access Account in the Ionic Administrator Console. This is done by creating a user with the "API Administrator" role. The username and password must be provided as `auth.username` and `auth.password` options to the `Client` constructor along with `auth.type` option equal to `'basic'`:
 
 ```javascript
 const client = new Client({
@@ -372,7 +372,7 @@ const policyBuilder = policies.createPolicy({
 
 To set the Target for the policy, two methods of the `PolicyBuilder` can be used interchangeably - `appliesToAllData`, which makes a policy that applies to all requests, and `appliesTo` which allows to specify a condition under which the policy is applied. Both of these methods return the same instance of `PolicyBuilder` you can chaing further method calls to:
 
-> Condition syntax will be explored below
+> Condition syntax will be explored below:
 
 ```javascript
 const policyBuilder = policies.createPolicy({ policyId: 'MyPolicy' }).appliesToAllData();
@@ -391,7 +391,7 @@ After the Target is set, you can specify the Rules for the policy. There are fou
 
 > You can see that the first two methods are semantically equvalent to the last two methods. They exist because they make for more readable code and rule descriptions
 
-These methods also return the `PolicyBuilder` instance
+These methods also return the `PolicyBuilder` instance:
 
 ```javascript
 const policyBuilder = policies.createPolicy({ policyId: 'MyPolicy' })
