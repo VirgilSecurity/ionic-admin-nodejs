@@ -226,7 +226,7 @@ const data = [
   { policyId: 'NewPolicyName', description: 'All data' },
 ];
 
-const result = await client.dataPolicies.createOrUpdatePolicies(data, merge);
+const result = await client.dataPolicies.createOrUpdatePolicies(data);
 // or with the "merge" query parameter set to "true"
 // const result = await client.dataPolicies.createOrUpdatePolicies(data, 'true');
 console.log(result.length); // 2
