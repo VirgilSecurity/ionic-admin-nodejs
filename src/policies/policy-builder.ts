@@ -44,7 +44,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
 
   alwaysAllow(): JsonPolicyBuilder {
     const rule = new Rule();
-    rule.setEffect(Rule.Deny);
+    rule.setEffect(Rule.Allow);
     rule.setDescription('Always allow.');
     this.policy.addRule(rule);
     return this;
@@ -52,7 +52,7 @@ class PolicyBuilder implements ConditionBuilder, RuleBuilder, MultipleRuleBuilde
 
   alwaysDeny(): JsonPolicyBuilder {
     const rule = new Rule();
-    rule.setEffect(Rule.Allow);
+    rule.setEffect(Rule.Deny);
     rule.setDescription('Always deny.');
     this.policy.addRule(rule);
     return this;
