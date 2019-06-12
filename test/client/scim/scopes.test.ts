@@ -8,7 +8,7 @@ test('can get scope list', async () => {
   const scopes = new ScopeApiClient(reqExecutorMock, '/Scopes');
 
   expect.assertions(2);
-  const actualResult = await scopes.list();
+  const actualResult = await scopes.listScopes();
   const [actualUrl] = reqExecutorMock.get.mock.calls[0];
   expect(actualResult).toBe(expectedResult);
   expect(actualUrl).toBe('/Scopes');

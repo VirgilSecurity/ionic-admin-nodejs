@@ -13,7 +13,7 @@ export class ScopeApiClient {
     this._prefix = prefix;
   }
 
-  async list(): Promise<ScopeList> {
+  async listScopes(): Promise<ScopeList> {
     const response = await this._requestExecutor.get<ScopeList>(this._prefix);
     return response.data;
   }

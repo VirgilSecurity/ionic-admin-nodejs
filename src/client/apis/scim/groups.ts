@@ -31,29 +31,29 @@ export class GroupApiClient {
     this._client = resourceApiClient;
   }
 
-  create(groupData: GroupData, attributesToReturn?: string[]): Promise<GroupResource> {
+  createGroup(groupData: GroupData, attributesToReturn?: string[]): Promise<GroupResource> {
     return this._client.createResource(groupData, attributesToReturn);
   }
 
-  list(params?: ResourceQueryParams<GroupFilterParams>): Promise<ResourceList<GroupResource>> {
+  listGroups(params?: ResourceQueryParams<GroupFilterParams>): Promise<ResourceList<GroupResource>> {
     return this._client.getResourceList(params);
   }
 
-  fetch(groupId: string, attributesToReturn?: string[]): Promise<GroupResource> {
+  fetchGroup(groupId: string, attributesToReturn?: string[]): Promise<GroupResource> {
     return this._client.getResource(groupId, attributesToReturn);
   }
 
-  update(groupId: string, groupData: GroupData, attributesToReturn?: string[]): Promise<GroupResource> {
+  updateGroup(groupId: string, groupData: GroupData, attributesToReturn?: string[]): Promise<GroupResource> {
     return this._client.updateResource(groupId, groupData, attributesToReturn);
   }
 
-  patch(groupId: string, patchData: GroupPatchData): Promise<void>;
-  patch(groupId: string, patchData: GroupPatchData, attributesToReturn: string[]): Promise<GroupResource>;
-  patch(groupId: string, patchData: GroupPatchData, attributesToReturn?: string[]): Promise<any> {
+  patchGroup(groupId: string, patchData: GroupPatchData): Promise<void>;
+  patchGroup(groupId: string, patchData: GroupPatchData, attributesToReturn: string[]): Promise<GroupResource>;
+  patchGroup(groupId: string, patchData: GroupPatchData, attributesToReturn?: string[]): Promise<any> {
     return this._client.patchResource(groupId, patchData, attributesToReturn);
   }
 
-  delete(groupId: string): Promise<void> {
+  deleteGroup(groupId: string): Promise<void> {
     return this._client.deleteResource(groupId);
   }
 }
