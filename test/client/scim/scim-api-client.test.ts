@@ -122,6 +122,17 @@ describe('User management', () => {
     expect(actualResult).toBe(expectedResult);
     expect(updateResourceMock).toHaveBeenCalledWith(userId, updateData, attrs);
   });
+
+  test('can delete user', async () => {
+    deleteResourceMock.mockResolvedValue(undefined);
+    const scim = new ScimApiClient(requestExecutorStub);
+
+    const userId = 'id_to_delete';
+    const result = await scim.deleteUser(userId);
+
+    expect(result).toBeUndefined();
+    expect(deleteResourceMock).toHaveBeenCalledWith(userId);
+  });
 });
 
 describe('Group management', () => {
