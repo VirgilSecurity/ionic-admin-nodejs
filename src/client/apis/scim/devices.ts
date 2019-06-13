@@ -1,6 +1,6 @@
-import ResourceApiClient from '../resource-api-client';
-import { ResourceList, DeviceResource, ResourceData, ResourceQueryParams } from './resources';
+import { ResourceData, Resource } from './resources';
 import { FilterParams } from '../../url-params-serializer';
+import { UserResource } from './users';
 
 export interface DeviceData extends ResourceData {
   name?: string;
@@ -16,26 +16,34 @@ export interface DeviceFilterParams extends FilterParams {
   updatedTs?: number;
 }
 
-export class DeviceApiClient {
-  private readonly _client: ResourceApiClient<DeviceResource, DeviceFilterParams>;
-
-  constructor(resourceApiClient: ResourceApiClient<DeviceResource, DeviceFilterParams>) {
-    this._client = resourceApiClient;
-  }
-
-  listDevices(params?: ResourceQueryParams<DeviceFilterParams>): Promise<ResourceList<DeviceResource>> {
-    return this._client.getResourceList(params);
-  }
-
-  fetchDevice(deviceId: string, attributesToReturn?: string[]): Promise<DeviceResource> {
-    return this._client.getResource(deviceId, attributesToReturn);
-  }
-
-  updateDevice(deviceId: string, deviceData: DeviceData, attributesToReturn?: string[]): Promise<DeviceResource> {
-    return this._client.updateResource(deviceId, deviceData, attributesToReturn);
-  }
-
-  deleteDevice(deviceId: string): Promise<void> {
-    return this._client.deleteResource(deviceId);
-  }
+export interface DeviceResource extends Resource {
+  keySpace?: string;
+  status?: boolean;
+  name?: string;
+  displayName?: string;
+  deleted?: boolean;
+  userId?: string;
+  user?: UserResource;
+  source?: { type: string; tenant: string; name: string; secondary: string };
+  sourceOrig?: { type?: string; name?: string; secondary?: string; tenant?: string; deviceId?: string };
+  subjectAttributes?: [{ type: string; value: string }];
+  lastHeard?: string;
+  lastIp?: string;
+  os?: string;
+  plugin?: string;
+  application?: string;
+  configRequestedTs?: string;
+  appPolicyVersion?: number;
+  configReference?: string;
+  enrollmentAssertion?: {
+    userId: string;
+    enrollmentCfgId: string;
+    enrollmentCfgVersion: number;
+    keyspace: string;
+    conversationId: string;
+    userLookupField: string;
+    userLookupValues: string[];
+    userAttributes: { [key: string]: any };
+    userAttributeSigB64: string;
+  };
 }

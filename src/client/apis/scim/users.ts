@@ -1,5 +1,4 @@
-import ResourceApiClient from '../resource-api-client';
-import { UserResource, ResourceList, ResourceData, ResourceQueryParams } from './resources';
+import { ResourceData, Resource } from './resources';
 import { FilterParams } from '../../url-params-serializer';
 
 export interface UserData extends ResourceData {
@@ -22,30 +21,13 @@ export interface UserFilterParams extends FilterParams {
   updatedTs?: number;
 }
 
-export class UserApiClient {
-  private readonly _client: ResourceApiClient<UserResource, UserFilterParams>;
-
-  constructor(resourceApiClient: ResourceApiClient<UserResource, UserFilterParams>) {
-    this._client = resourceApiClient;
-  }
-
-  createUser(userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
-    return this._client.createResource(userData, attributesToReturn);
-  }
-
-  listUsers(params?: ResourceQueryParams<UserFilterParams>): Promise<ResourceList<UserResource>> {
-    return this._client.getResourceList(params);
-  }
-
-  fetchUser(userId: string, attributesToReturn?: string[]): Promise<UserResource> {
-    return this._client.getResource(userId, attributesToReturn);
-  }
-
-  updateUser(userId: string, userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
-    return this._client.updateResource(userId, userData, attributesToReturn);
-  }
-
-  deleteUser(userId: string): Promise<void> {
-    return this._client.deleteResource(userId);
-  }
+export interface UserResource extends Resource {
+  externalId: string;
+  active?: boolean;
+  emails?: { value: string; type: string; primary: boolean }[];
+  groups?: { type: string; value: string; displayName: string }[];
+  name?: { givenName: string; familyName: string; formatted: string };
+  roles?: { type: string; value: string; display: string };
+  userName?: string;
+  [schema: string]: any;
 }

@@ -1,4 +1,4 @@
-import ResourceApiClient from '../../src/client/apis/resource-api-client';
+import ResourceApiClient from '../../src/client/apis/scim/resource-api-client';
 import { Resource, ResourceData } from '../../src/client/apis/scim/resources';
 import { FilterParams } from '../../src/client/url-params-serializer';
 

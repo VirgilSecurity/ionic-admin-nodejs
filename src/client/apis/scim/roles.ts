@@ -1,5 +1,4 @@
-import ResourceApiClient from '../resource-api-client';
-import { ResourceList, RoleResource, ResourceData, ResourceQueryParams } from './resources';
+import { ResourceData, Resource } from './resources';
 import { FilterParams } from '../../url-params-serializer';
 
 export interface RoleFilterParams extends FilterParams {
@@ -22,30 +21,11 @@ export interface RoleUpdateData extends ResourceData {
   scopes?: string[];
 }
 
-export class RoleApiClient {
-  private readonly _client: ResourceApiClient<RoleResource, RoleFilterParams>;
-
-  constructor(resourceApiClient: ResourceApiClient<RoleResource, RoleFilterParams>) {
-    this._client = resourceApiClient;
-  }
-
-  createRole(roleData: RoleData): Promise<RoleResource> {
-    return this._client.createResource(roleData);
-  }
-
-  listRoles(params?: ResourceQueryParams<RoleFilterParams>): Promise<ResourceList<RoleResource>> {
-    return this._client.getResourceList(params);
-  }
-
-  fetchRole(roleId: string): Promise<RoleResource> {
-    return this._client.getResource(roleId);
-  }
-
-  updateRole(roleId: string, roleData: RoleUpdateData): Promise<RoleResource> {
-    return this._client.updateResource(roleId, roleData);
-  }
-
-  deleteRole(roleId: string): Promise<void> {
-    return this._client.deleteResource(roleId);
-  }
+export interface RoleResource extends Resource {
+  name?: string;
+  displayName?: string;
+  description?: string;
+  scopes?: string[];
+  active?: boolean;
+  readOnly?: boolean;
 }

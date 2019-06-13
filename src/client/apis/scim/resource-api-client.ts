@@ -1,6 +1,6 @@
-import RequestExecutor from '../request-executor';
-import { FilterParams } from '../url-params-serializer';
-import { ResourceList, Resource, ResourceData, ResourceQueryParams } from './scim/resources';
+import RequestExecutor from '../../request-executor';
+import { FilterParams } from '../../url-params-serializer';
+import { ResourceList, Resource, ResourceData, ResourceQueryParams } from './resources';
 
 export default class ResourceApiClient<TResource extends Resource, TFilterParams extends FilterParams> {
   private readonly _requestExecutor: RequestExecutor;

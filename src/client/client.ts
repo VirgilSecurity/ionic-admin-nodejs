@@ -1,7 +1,7 @@
 import createAuthentication from './auth/create-authentication';
 import { AuthOptions } from './auth/authentication';
 import RequestExecutor from './request-executor';
-import { ScimApiClient } from './apis/scim-api-client';
+import { ScimApiClient } from './apis/scim/scim-api-client';
 import { scimUrlParamsSerializer } from './apis/scim/scim-url-params-serializer';
 import { DataMarkingApiClient } from './apis/data-markings/data-markings-api-client';
 import { urlParamsSerializer } from './url-params-serializer';
