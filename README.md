@@ -443,7 +443,7 @@ When the server returns a response with the status code that falls out of range 
 
 ### Constructing Policy
 
-For cunstructing policies there is a helper function called `createPolicy` available under the `policies` namespace of the library. It accepts a hash with three properties - _policyId_, _enabled_ and _ruleCombiningAlgId_ and returns a `PolicyBuilder` object with a fluent interface that allows for further configuration of the policy - setting the Target and Rules. As in the [API](https://dev.ionic.com/api/policies/create-policy) _policyId_ is the only required field. The _description_ field will depend on the Target and will be generated automatically.
+For constructing policies there is a helper function called `createPolicy` available under the `policies` namespace of the library. It accepts a hash with three properties - _policyId_, _enabled_ and _ruleCombiningAlgId_ and returns a `PolicyBuilder` object with a fluent interface that allows for further configuration of the policy - setting the Target and Rules. As in the [API](https://dev.ionic.com/api/policies/create-policy) _policyId_ is the only required field. The _description_ field will depend on the Target and will be generated automatically.
 
 ```javascript
 const { policies } = require('ionic-admin-sdk');
@@ -454,7 +454,7 @@ const policyBuilder = policies.createPolicy({
 });
 ```
 
-To set the Target for the policy, two methods of the `PolicyBuilder` can be used interchangeably - `appliesToAllData`, which makes a policy that applies to all requests, and `appliesTo` which allows to specify a condition under which the policy is applied. Both of these methods return the same instance of `PolicyBuilder` you can chaing further method calls to:
+To set the Target for the policy, two methods of the `PolicyBuilder` can be used interchangeably - `appliesToAllData`, which makes a policy that applies to all requests, and `appliesTo` which allows to specify a condition under which the policy is applied. Both of these methods return the same instance of `PolicyBuilder` you can change further method calls to:
 
 > Condition syntax will be explored below:
 
@@ -473,7 +473,7 @@ After the Target is set, you can specify the Rules for the policy. There are fou
 * `allowOtherwise()` - Adds a rule with "Permit" effect, "Allow otherwise." as description and no condition
 * `denyOtherwise()` - Adds a rule with "Deny" effect, "Deny otherwise." as description and no condition
 
-> You can see that the first two methods are semantically equvalent to the last two methods. They exist because they make for more readable code and rule descriptions
+> You can see that the first two methods are semantically equivalent to the last two methods. They exist because they make for more readable code and rule descriptions
 
 These methods also return the `PolicyBuilder` instance:
 
@@ -503,7 +503,7 @@ const policy = await client.dataPolicies.createPolicy(policyData);
 
 The construction of simple or complex conditions using the functions provided by the Ionic Policy Engine applied against the attributes available in a decision request is what makes XACML and the Ionic Policy Engine flexible and powerful.
 
-All Functions (except for the Higher Order Bag functions) and all Key Request Attributes listed in the [Ionic XACML Reference](https://dev.ionic.com/platform/policy/xacml-reference) are available under the `policies` namespace of the libary. 
+All Functions (except for the Higher Order Bag functions) and all Key Request Attributes listed in the [Ionic XACML Reference](https://dev.ionic.com/platform/policy/xacml-reference) are available under the `policies` namespace of the library. 
 
 Attributes are arranged as objects hierarchy with the root `Attributes` object which has properties for each _Category_ (i.e. `resource`, `subject` and `environment`) which in turn have properties for every _ID_ in the category with the property name equal to `camelCase(ID)`:
 
