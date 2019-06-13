@@ -128,7 +128,7 @@ console.log(user.id); // e.g. 5890d3baf8ab7b0291acd1fc
 **List Users**
 
 ```javascript
-const params = { skip: 1, limit: 10, filter: { email: 'user@example.com' } };
+const params = { skip: 1, limit: 10 };
 const result = await client.scim.listUsers(params);
 console.log(result.Resources.length); // <= 10
 ```
@@ -186,10 +186,12 @@ const patchData: GroupPatchData = {
   displayName: 'NewDisplayName',
 };
 
-// when "attributes" query parameter is not specified - the method returns undefined
-await scim.patchGroup(groupId, patchData);
+// when "attributes" query parameter is not specified returns nothing
+const result = await scim.patchGroup(groupId, patchData);
+console.log(result); // undefined
+
 // or
-// when "attributes" is specified = the method returns the updated group
+// when "attributes" is specified returns the updated group
 const updatedGroup = client.scim.patchGroup(groupId, patchData, { attributes: ['displayName', 'members'] });
 console.log(updatedGroup.id);
 ```
@@ -332,10 +334,15 @@ console.log(dataPolicyList.Resources); // array of Data Markings
 ```
 
 **Output control**
+
 In SCIM API methods `attributes` parameter can be used to specify the fields to include in the response:
 
 ```javascript
-const groupList = await client.scim.listGroups({ startIndex: 11, count: 10, attributes: ['name', 'members'] });
+const groupList = await client.scim.listGroups({ 
+  startIndex: 11, 
+  count: 10, 
+  attributes: ['name', 'members'] 
+});
 console.log(groupList.Resources); // array of Groups
 ```
 
