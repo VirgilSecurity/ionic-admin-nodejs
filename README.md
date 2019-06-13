@@ -23,12 +23,12 @@ npm i https://github.com/VirgilSecurity/ionic-admin-nodejs/releases/download/v0.
 
 ### Management APIs
 
-All of the APIs are available from the instance of the `Client` class, which must be instantiated with your Ionic API base URL, your Tenant ID and authentication options:
+All of the APIs are available from the instance of the `IonicApiClient` class, which must be instantiated with your Ionic API base URL, your Tenant ID and authentication options:
 
 ```javascript
-const { Client } = require('ionic-admin-sdk');
+const { IonicApiClient } = require('ionic-admin-sdk');
 
-const client = new Client({
+const client = new IonicApiClient({
   baseUrl: 'https://api.ionic.com',
   tenantId: '<YOUR_TENANT_ID>',
   auth: { }, // see "Authentication" section below
@@ -45,10 +45,12 @@ There are three supported authentication schemes:
 * MAC Authentication
 * Basic Authentication
 
-In order to use **Bearer authentication**, an administrator must first create an API Key. Once created, a "Secret Token" is provided and should be copied and stored securely. The "Secret Token" must be securely provided (i.e. via environment variable) as `auth.secretToken` option to the `Client` constructor along with `auth.type` option equal to `'bearer'`:
+In order to use **Bearer authentication**, an administrator must first create an API Key. Once created, a "Secret Token" is provided and should be copied and stored securely. The "Secret Token" must be securely provided (i.e. via environment variable) as `auth.secretToken` option to the `IonicApiClient` constructor along with `auth.type` option equal to `'bearer'`:
 
 ```javascript
-const client = new Client({
+const { IonicApiClient } = require('ionic-admin-sdk');
+
+const client = new IonicApiClient({
   baseUrl: 'https://api.ionic.com',
   tenantId: '<YOUR_TENANT_ID>',
   auth: {
@@ -58,10 +60,12 @@ const client = new Client({
 });
 ```
 
-For **MAC authentication**, an API Key must be created. Once created, an "ID" and "Secret" are provided and should be copied and stored securely. These are provided as `auth.apiKeyId` and `auth.apiKeySecret` options to the `Client` constructor along with `auth.type` option equal to `'mac'`:
+For **MAC authentication**, an API Key must be created. Once created, an "ID" and "Secret" are provided and should be copied and stored securely. These are provided as `auth.apiKeyId` and `auth.apiKeySecret` options to the `IonicApiClient` constructor along with `auth.type` option equal to `'mac'`:
 
 ```javascript
-const client = new Client({
+const { IonicApiClient } = require('ionic-admin-sdk');
+
+const client = new IonicApiClient({
   baseUrl: 'https://api.ionic.com',
   tenantId: '<YOUR_TENANT_ID>',
   auth: {
@@ -72,10 +76,12 @@ const client = new Client({
 });
 ```
 
-To use **basic authentication**, you must create an API Access Account. You can create an API Access Account in the Ionic Administrator Console. This is done by creating a user with the "API Administrator" role. The username and password must be provided as `auth.username` and `auth.password` options to the `Client` constructor along with `auth.type` option equal to `'basic'`:
+To use **basic authentication**, you must create an API Access Account. You can create an API Access Account in the Ionic Administrator Console. This is done by creating a user with the "API Administrator" role. The username and password must be provided as `auth.username` and `auth.password` options to the `IonicApiClient` constructor along with `auth.type` option equal to `'basic'`:
 
 ```javascript
-const client = new Client({
+const { IonicApiClient } = require('ionic-admin-sdk');
+
+const client = new IonicApiClient({
   baseUrl: 'https://api.ionic.com',
   tenantId: '<YOUR_TENANT_ID>',
   auth: {
@@ -88,17 +94,17 @@ const client = new Client({
 
 #### SCIM API
 
-The SCIM API enables users to programmatically manage users registered in the Ionic Platform. These are available via `scim` property of the `Client` instance and are further broken down into Users, Groups, Devices, Roles and Scopes and available as `scim.users`, `scim.groups`, `scim.roles`, `scim.devices` and `scim.scopes`. 
+The SCIM API enables users to programmatically manage users registered in the Ionic Platform. These are available via `scim` property of the `IonicApiClient` instance. 
 
 All of the [API endpoints](https://dev.ionic.com/api/scim), except the [Bulk Operations](https://dev.ionic.com/api/scim/bulk-operations) are supported.
-Each supported endpoint corresponds to a method on the appropriate object, e.g. `scim.scopes.listScopes`, with the method name being the endpoint name in camelCase. One exception to that are "Update Group PUT" and "Update Group PATCH" endpoints, which correspond to `scim.groups.updateGroup` and `scim.groups.patchGroup` methods respectively.
+Each supported endpoint corresponds to a method, e.g. `scim.listScopes`, with the method name being the endpoint name in camelCase. One exception to that are "Update Group PUT" and "Update Group PATCH" endpoints, which correspond to `scim.updateGroup` and `scim.patchGroup` methods respectively.
 
 All of the methods accept and return JSON in the same format as the API endpoints. Methods corresponding to endpoints with the resource ID in the URL (e.g. Fetch User), accept the ID as the first parameter.
 
-If an endpoint accepts `attributes` query parameter, the corresponding method accepts the attributes array as the last argument:
+If an endpoint accepts query parameters, the corresponding method accepts an object with property names corresponding to query parameter names as the last argument:
 
 ```javascript
-const user = await client.scim.fetchUser(userId, ['name', 'email', 'groups' ]);
+const user = await client.scim.fetchUser(userId, { attributes: ['name', 'email', 'groups' ] });
 ```
 
 ##### Examples
@@ -106,18 +112,51 @@ const user = await client.scim.fetchUser(userId, ['name', 'email', 'groups' ]);
 **Create User**
 
 ```javascript
-const user = await client.scim.users.createUser({
-  schemas: [client.scim.Schemas.Ionic], 
-  name: { givenName: 'John', familyName: 'Doe' }
+const user = await client.scim.createUser({
+  schemas: [client.scim.Schemas.Core, client.scim.Schemas.Ionic], 
+  name: { givenName: 'John', familyName: 'Doe' },
+  email: [{ value: 'jdoe@example.com' }],
+  [client.scim.Schemas.Ionic]: {
+    domainUpn: 'jdoe@example.com',
+    sendEmail: false,
+    groups: [{ type: 'group', value: groupId }]
+  }
 });
 console.log(user.id); // e.g. 5890d3baf8ab7b0291acd1fc
+```
+
+**List Users**
+
+```javascript
+const params = { skip: 1, limit: 10, filter: { email: 'user@example.com' } };
+const result = await client.scim.listUsers(params);
+console.log(result.Resources.length); // <= 10
+```
+
+**Fetch User**
+
+```javascript
+const user = await client.scim.fetchUser(userId);
+```
+
+**Update User**
+
+```javascript
+const updateData = { schemas: [client.scim.Schemas.Core], name: { familyName: 'Anderson' } };
+const updatedUser = await client.scim.updateUser(userId, updateData);
+```
+
+**Delete User**
+
+```javascript
+await client.scim.deleteUser(userId);
 ```
 
 **Update Device**
 
 ```javascript
-const disabledDevice = await client.scim.devices.updateDevice(deviceId, {
-  schemas: [client.scim.Schemas.Ionic],
+const disabledDevice = await client.scim.updateDevice(deviceId, {
+  schemas: [client.scim.Schemas.Core],
   status: false
 });
 console.log(disableDevice.status); // false
@@ -126,23 +165,55 @@ console.log(disableDevice.status); // false
 **List Groups**
 
 ```javascript
-const groupList = await client.scim.groups.listGroups();
+const groupList = await client.scim.listGroups();
 console.log(groupList.totalResults); // e.g. 5
+```
+
+**Update Group PATCH**
+
+```javascript
+const patchData: GroupPatchData = {
+  schemas: [client.scim.Schemas.Core, client.scim.Schemas.Ionic],
+  members: [
+    {
+      value: '777777777777777777',
+      operation: 'delete',
+    },
+    {
+      value: '888888888888888888',
+    },
+  ],
+  displayName: 'NewDisplayName',
+};
+
+// when "attributes" query parameter is not specified - the method returns undefined
+await scim.patchGroup(groupId, patchData);
+// or
+// when "attributes" is specified = the method returns the updated group
+const updatedGroup = client.scim.patchGroup(groupId, patchData, { attributes: ['displayName', 'members'] });
+console.log(updatedGroup.id);
 ```
 
 **Delete Role**
 
 ```javascript
-await client.scim.roles.deleteRole(roleId);
+await client.scim.deleteRole(roleId);
 ```
 
 #### Data Markings API
 
-Data Markings allow developers to associate attributes to the keys that protect application data. These attributes can be used for both data access policy purposes and for analytics purposes. This API is avalable via `dataMarkings` property of the `Client` instance.
+Data Markings allow developers to associate attributes to the keys that protect application data. These attributes can be used for both data access policy purposes and for analytics purposes. This API is avalable via `dataMarkings` property of the `IonicApiClient` instance.
 
 All of the [API endpoints](https://dev.ionic.com/api/markings) are supported. Each endpoint corresponds to a method on the `client.dataMarkings` object, e.g. `client.dataMarkings.listMarkings`, with the method name being the endpoint name in camelCase.
 
 All of the methods accept and return JSON in the same format as the API endpoints. Methods corresponding to endpoints with the resource ID in the URL (e.g. Fetch Data Marking), accept the ID as the first parameter.
+
+If an endpoint accepts query parameters, the corresponding method accepts an object with property names corresponding to query parameter names as the last argument:
+
+```javascript
+const marking = await client.dataMarkings.fetchMarking(markingId, { valueLimit: 10 });
+console.log(marking.detail.values.length); // <= 10
+```
 
 ##### Examples
 
@@ -165,7 +236,7 @@ console.log(dataMarkingList.totalResults); // e.g. 10
 ```javascript
 const dataMarkingById = await client.dataMarkings.fetchMarking(markingId);
 // or with "valueLimit" query parameter
-// const dataMarkingById = await client.dataMarkings.fetchMarking(markingId, 10);
+// const dataMarkingById = await client.dataMarkings.fetchMarking(markingId, { valueLimit: 10 });
 ```
 
 **Create or Update Multiple Markings**
@@ -192,11 +263,17 @@ console.log(markingValueList.totalResults); // e.g. 100
 
 #### Data Policies API
 
-Data policies allow developers to create rules for how data can be accessed. The Policies API is used to administer policies for a tenant is available via `dataPolicies` property of the `Client` instance. Administrators can perform list, fetch, create, update, and delete actions on policies using these API methods.
+Data policies allow developers to create rules for how data can be accessed. The Policies API is used to administer policies for a tenant and is available via `dataPolicies` property of the `IonicApiClient` instance. Administrators can perform list, fetch, create, update, and delete actions on policies using these API methods.
 
-All of the [API endpoints](https://dev.ionic.com/api/policies) are supported. Each endpoint corresponds to a method on the `client.dataPolicies` object, e.g. `client.dataMarkings.listPolicies`, with the method name being the endpoint name in camelCase. One exception to that is "Create or Update Multiple Policies" endpoint which corresponds to `client.dataPolicies.createOrUpdatePolicies` method.
+All of the [API endpoints](https://dev.ionic.com/api/policies) are supported. Each endpoint corresponds to a method on the `client.dataPolicies` object, e.g. `client.dataPolicies.listPolicies`, with the method name being the endpoint name in camelCase. One exception to that is "Create or Update Multiple Policies" endpoint which corresponds to `client.dataPolicies.createOrUpdatePolicies` method.
 
 All of the methods accept and return JSON in the same format as the API endpoints. Methods corresponding to endpoints with the resource ID in the URL (e.g. Fetch Policy), accept the ID as the first parameter.
+
+If an endpoint accepts query parameters, the corresponding method accepts an object with property names corresponding to query parameter names as the last argument:
+
+```javascript
+const policies = await client.dataPolicies.createOrUpdatePolicies(data, { merge: 'true' });
+```
 
 ##### Examples
 
@@ -228,7 +305,7 @@ const data = [
 
 const result = await client.dataPolicies.createOrUpdatePolicies(data);
 // or with the "merge" query parameter set to "true"
-// const result = await client.dataPolicies.createOrUpdatePolicies(data, 'true');
+// const result = await client.dataPolicies.createOrUpdatePolicies(data, { merge: 'true' });
 console.log(result.length); // 2
 ```
 
@@ -240,14 +317,14 @@ console.log(policyList.totalResults); // e.g. 8
 
 #### Pagination, Search and Filter Paremeters
 
-To all of the `list*` methods (except for `listScopes`) parameters may be provided to control the number of results and apply some filtering criteria to the returned list.
+To all of the `list*` methods (except for `scim.listScopes`) parameters may be provided to control the number of results and apply some filtering criteria to the returned list.
 
 **Pagination**
 
 The following parameters may be used for pagination: `startIndex` and `count` or `skip` and `limit`. The `limit` and `count` parameters may be used interchangeable. The `skip` and `startIndex` parameters have an off-by-one relationship defined by `startIndex=skip+1`.
 
 ```javascript
-const userList = await client.scim.users.listUsers({ startIndex: 11, count: 10 });
+const userList = await client.scim.listUsers({ startIndex: 11, count: 10 });
 console.log(userList.Resources); // array of Users
 
 const dataPolicyList = await client.dataPolicies.listPolicies({ skip: 10, limit: 10 });
@@ -258,7 +335,7 @@ console.log(dataPolicyList.Resources); // array of Data Markings
 In SCIM API methods `attributes` parameter can be used to specify the fields to include in the response:
 
 ```javascript
-const groupList = await client.scim.groups.listGroups({ startIndex: 11, count: 10, attributes: ['name', 'members'] });
+const groupList = await client.scim.listGroups({ startIndex: 11, count: 10, attributes: ['name', 'members'] });
 console.log(groupList.Resources); // array of Groups
 ```
 
@@ -276,7 +353,7 @@ Filter parameters may be passed into `list*` methods as the `filter` option. The
 To control the way the value is matched, one or more filter operators may be scpecified. As opposed to the API, where the filter operators are appended to the field name, here they must be passed as an object with properties matching the names of suffixes defined in the API documentation:
 
 ```javascript
-const userList = await client.scim.users.listUsers({
+const userList = await client.scim.listUsers({
   filter: {
     email: 'username@example.com', // no operator, the field will be matched exactly
     domainUpn: { __contains: 'something' }, 
@@ -293,7 +370,7 @@ const userList = await client.scim.users.listUsers({
 When multiple filter parameters are provided and `or: true`, results will include a union of records matching each parameter provided:
 
 ```javascript
-const groupList = await client.scim.groups.listGroups({
+const groupList = await client.scim.listGroups({
   filter: {
     name: { __startswith: 'My' },
     description: { __empty: false },
@@ -305,7 +382,7 @@ const groupList = await client.scim.groups.listGroups({
 The `__ne` filter operator may be used to return records that have an associated field value that does not match the provided value:
 
 ```javascript
-const groupList = await client.scim.groups.listGroups({
+const groupList = await client.scim.listGroups({
   filter: {
     name: { __ne: 'MyGroup' },
   }
@@ -315,7 +392,7 @@ const groupList = await client.scim.groups.listGroups({
 This may also be combined with other operators to negate them:
 
 ```javascript
-const groupList = await client.scim.groups.listGroups({
+const groupList = await client.scim.listGroups({
   filter: {
     name: { __contains: { __ne: 'Group' } },
   }
@@ -325,7 +402,7 @@ const groupList = await client.scim.groups.listGroups({
 Multiple operators for the same field may be specified:
 
 ```javascript
-const groupList = await client.scim.groups.listGroups({
+const groupList = await client.scim.listGroups({
   filter: {
     createdTs: { __lte: (Date.now() / 1000) - 600, __gte: (Date.now() / 1000) - 300 },
   }
@@ -359,7 +436,7 @@ When the server returns a response with the status code that falls out of range 
 
 ### Constructing Policy
 
-For cunstructing policies there is a helper function called `createPolicy` available under the `policies` namespace of the library. It accepts a hash with three properties - _policyId_, _enabled_ and _ruleCombiningAlgId_ and returns a `PolicyBuilder` object with a fluent interface that allows for further condifuration of the policy - setting the Target and Rules. As in the [API](https://dev.ionic.com/api/policies/create-policy) _policyId_ is the only required field. The _description_ field will depend on the Target and will be generated automatically.
+For cunstructing policies there is a helper function called `createPolicy` available under the `policies` namespace of the library. It accepts a hash with three properties - _policyId_, _enabled_ and _ruleCombiningAlgId_ and returns a `PolicyBuilder` object with a fluent interface that allows for further configuration of the policy - setting the Target and Rules. As in the [API](https://dev.ionic.com/api/policies/create-policy) _policyId_ is the only required field. The _description_ field will depend on the Target and will be generated automatically.
 
 ```javascript
 const { policies } = require('ionic-admin-sdk');
@@ -409,7 +486,7 @@ Finally, when the Target and the Rules have been configured, the `PolicyBuilder`
 ```javascript
 const policyData = policies.createPolicy({ policyId: 'MyPolicy' })
   .appliesToAllData()
-  .allwaysAllow()
+  .alwaysAllow()
   .toJson();
 
 const policy = await client.dataPolicies.createPolicy(policyData);
@@ -421,7 +498,7 @@ The construction of simple or complex conditions using the functions provided by
 
 All Functions (except for the Higher Order Bag functions) and all Key Request Attributes listed in the [Ionic XACML Reference](https://dev.ionic.com/platform/policy/xacml-reference) are available under the `policies` namespace of the libary. 
 
-Attributes are arranged as objects hierarchy with the root `Attributes` object which has properties for each _Category_ (i.e. `resource`, `category` and `environment`) which in turn have properties for every _ID_ in the category with the property name equal to `camelCase(ID)`:
+Attributes are arranged as objects hierarchy with the root `Attributes` object which has properties for each _Category_ (i.e. `resource`, `subject` and `environment`) which in turn have properties for every _ID_ in the category with the property name equal to `camelCase(ID)`:
 
 ```javascript
 console.log(policies.Attributes.resource.createdDateTime); // { "category": "resource", id: "created-dateTime" }
@@ -435,7 +512,7 @@ console.log(typeof policies.fns.stringAtLeastOneMemberOf); // function
 console.log(typeof policies.fns.or); // function
 ```
 
-The `condition` parameter passed into `appliesTo` or `allowIf` methods must be a function with the return type of `boolen`:
+The `condition` parameter passed into `appliesTo`, `allowIf` or `denyIf` methods must be a function with the return type of `boolean`:
 
 ```javascript
 // create policy to ensure that data classified as top secret is only accessed by trusted guys
@@ -497,6 +574,7 @@ console.log(samlResponse); // xml string
 
 * [Bulk Operations](https://dev.ionic.com/api/scim/bulk-operations) in SCIM APIs
 * Higher Order Bag functions for condition construction
+* Prettier autogenerated descriptions for Policies and Rules
 * More tests
 * API Reference Documentation
 * Downloads and Metrics APIs?
