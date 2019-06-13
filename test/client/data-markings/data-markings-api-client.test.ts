@@ -51,7 +51,7 @@ test('can specify value limit when fetching marking', async () => {
   reqExecutorMock.get.mockResolvedValue({ data: expectedMarking });
 
   const valueLimit = 10;
-  const actualMarking = await markings.fetchMarking(markingId, valueLimit);
+  const actualMarking = await markings.fetchMarking(markingId, { valueLimit });
 
   expect(actualMarking).toBe(expectedMarking);
   expect(reqExecutorMock.get).toHaveBeenCalledWith('/markings/marking_id', { params: { valueLimit } });

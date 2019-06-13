@@ -79,7 +79,7 @@ describe('User management', () => {
 
     const userData = { schemas: ['urn:scim:schemas:core:1.0'], name: { givenName: 'Test', familyName: 'User' } };
     const attrs = ['name', 'emails'];
-    const actualUser = await scim.createUser(userData, attrs);
+    const actualUser = await scim.createUser(userData, { attributes: attrs });
 
     expect(actualUser).toBe(expectedUser);
     expect(createResourceMock).toHaveBeenCalledWith(userData, attrs);
@@ -104,7 +104,7 @@ describe('User management', () => {
 
     const userId = 'test_id';
     const attrs = ['name', 'emails'];
-    const actualUser = await scim.fetchUser(userId, attrs);
+    const actualUser = await scim.fetchUser(userId, { attributes: attrs });
     expect(actualUser).toBe(expectedUser);
     expect(getResourceMock).toHaveBeenCalledWith(userId, attrs);
   });
@@ -117,7 +117,7 @@ describe('User management', () => {
     const userId = 'test_id';
     const updateData = { schemas: ['urn:scim:schemas:core:1.0'], name: { familyName: 'Tester' } };
     const attrs = ['name', 'groups'];
-    const actualResult = await scim.updateUser(userId, updateData, attrs);
+    const actualResult = await scim.updateUser(userId, updateData, { attributes: attrs });
 
     expect(actualResult).toBe(expectedResult);
     expect(updateResourceMock).toHaveBeenCalledWith(userId, updateData, attrs);
@@ -134,7 +134,7 @@ describe('Group management', () => {
 
     const groupData = { schemas: ['urn:scim:schemas:core:1.0'], displayName: 'Test Group' };
     const attrs = ['displayName', 'members'];
-    const actualGroup = await scim.createGroup(groupData, attrs);
+    const actualGroup = await scim.createGroup(groupData, { attributes: attrs });
 
     expect(actualGroup).toBe(expectedGroup);
     expect(createResourceMock).toHaveBeenCalledWith(groupData, attrs);
@@ -159,7 +159,7 @@ describe('Group management', () => {
 
     const groupId = 'test_id';
     const attrs = ['displayName', 'members'];
-    const actualGroup = await scim.fetchGroup(groupId, attrs);
+    const actualGroup = await scim.fetchGroup(groupId, { attributes: attrs });
 
     expect(actualGroup).toBe(expectedGroup);
     expect(getResourceMock).toHaveBeenCalledWith(groupId, attrs);
@@ -173,7 +173,7 @@ describe('Group management', () => {
     const groupId = 'test_id';
     const groupData = { schemas: ['urn:scim:schemas:core:1.0'], displayName: 'Updated Group' };
     const attrs = ['displayName', 'members'];
-    const actualResult = await scim.updateGroup(groupId, groupData, attrs);
+    const actualResult = await scim.updateGroup(groupId, groupData, { attributes: attrs });
 
     expect(actualResult).toBe(expectedResult);
     expect(updateResourceMock).toHaveBeenCalledWith(groupId, groupData, attrs);
@@ -227,7 +227,7 @@ describe('Group management', () => {
     };
     const attrs = ['displayName', 'members'];
 
-    const actualResult = await scim.patchGroup(groupId, patchData, attrs);
+    const actualResult = await scim.patchGroup(groupId, patchData, { attributes: attrs });
 
     expect(actualResult).toBe(expectedResult);
     expect(patchResourceMock).toHaveBeenCalledWith(groupId, patchData, attrs);
@@ -265,7 +265,7 @@ describe('Device management', () => {
 
     const deviceId = 'test_id';
     const attrs = ['keySpace', 'displayName', 'user'];
-    const actualDevice = await scim.fetchDevice(deviceId, attrs);
+    const actualDevice = await scim.fetchDevice(deviceId, { attributes: attrs });
 
     expect(actualDevice).toBe(expectedDevice);
     expect(getResourceMock).toHaveBeenCalledWith(deviceId, attrs);
@@ -280,7 +280,7 @@ describe('Device management', () => {
     const deviceData = { schemas: ['urn:scim:schemas:core:1.0'], name: 'NewDeviceName', status: false };
     const attrs = ['keySpace', 'user'];
 
-    const actualResult = await scim.updateDevice(deviceId, deviceData, attrs);
+    const actualResult = await scim.updateDevice(deviceId, deviceData, { attributes: attrs });
     expect(actualResult).toBe(expectedResult);
     expect(updateResourceMock).toBeCalledWith(deviceId, deviceData, attrs);
   });

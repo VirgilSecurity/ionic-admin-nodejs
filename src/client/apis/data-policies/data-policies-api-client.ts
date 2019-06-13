@@ -63,7 +63,7 @@ export class DataPolicyApiClient {
 
   async createOrUpdatePolicies(
     data: (DataPolicyData | DataPolicyUpdateDataWithId)[],
-    merge?: 'false' | 'true' | 'replace',
+    { merge }: { merge?: 'false' | 'true' | 'replace' } = {},
   ): Promise<DataPolicy[]> {
     const config = typeof merge === 'string' ? { params: { merge } } : undefined;
     const response = await this._requestExecutor.post<DataPolicy[]>(POLICIES_ENDPOINT, data, config);

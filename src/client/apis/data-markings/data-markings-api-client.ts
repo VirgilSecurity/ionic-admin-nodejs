@@ -77,7 +77,7 @@ export class DataMarkingApiClient {
     return response.data;
   }
 
-  async fetchMarking(id: string, valueLimit?: number): Promise<DataMarking> {
+  async fetchMarking(id: string, { valueLimit }: { valueLimit?: number } = {}): Promise<DataMarking> {
     const response = await this._requestExecutor.get<DataMarking>(SINGLE_MARKING_ENDPOINT(id), {
       params: typeof valueLimit === 'number' ? { valueLimit } : undefined,
     });

@@ -36,46 +36,58 @@ export class ScimApiClient {
     return response.data;
   }
 
-  createUser(userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
-    return this._users.createResource(userData, attributesToReturn);
+  createUser(userData: UserData, { attributes }: { attributes?: string[] } = {}): Promise<UserResource> {
+    return this._users.createResource(userData, attributes);
   }
 
   listUsers(params?: ResourceQueryParams<UserFilterParams>): Promise<ResourceList<UserResource>> {
     return this._users.getResourceList(params);
   }
 
-  fetchUser(userId: string, attributesToReturn?: string[]): Promise<UserResource> {
-    return this._users.getResource(userId, attributesToReturn);
+  fetchUser(userId: string, { attributes }: { attributes?: string[] } = {}): Promise<UserResource> {
+    return this._users.getResource(userId, attributes);
   }
 
-  updateUser(userId: string, userData: UserData, attributesToReturn?: string[]): Promise<UserResource> {
-    return this._users.updateResource(userId, userData, attributesToReturn);
+  updateUser(
+    userId: string,
+    userData: UserData,
+    { attributes }: { attributes?: string[] } = {},
+  ): Promise<UserResource> {
+    return this._users.updateResource(userId, userData, attributes);
   }
 
   deleteUser(userId: string): Promise<void> {
     return this._users.deleteResource(userId);
   }
 
-  createGroup(groupData: GroupData, attributesToReturn?: string[]): Promise<GroupResource> {
-    return this._groups.createResource(groupData, attributesToReturn);
+  createGroup(groupData: GroupData, { attributes }: { attributes?: string[] } = {}): Promise<GroupResource> {
+    return this._groups.createResource(groupData, attributes);
   }
 
   listGroups(params?: ResourceQueryParams<GroupFilterParams>): Promise<ResourceList<GroupResource>> {
     return this._groups.getResourceList(params);
   }
 
-  fetchGroup(groupId: string, attributesToReturn?: string[]): Promise<GroupResource> {
-    return this._groups.getResource(groupId, attributesToReturn);
+  fetchGroup(groupId: string, { attributes }: { attributes?: string[] } = {}): Promise<GroupResource> {
+    return this._groups.getResource(groupId, attributes);
   }
 
-  updateGroup(groupId: string, groupData: GroupData, attributesToReturn?: string[]): Promise<GroupResource> {
-    return this._groups.updateResource(groupId, groupData, attributesToReturn);
+  updateGroup(
+    groupId: string,
+    groupData: GroupData,
+    { attributes }: { attributes?: string[] } = {},
+  ): Promise<GroupResource> {
+    return this._groups.updateResource(groupId, groupData, attributes);
   }
 
   patchGroup(groupId: string, patchData: GroupPatchData): Promise<void>;
-  patchGroup(groupId: string, patchData: GroupPatchData, attributesToReturn: string[]): Promise<GroupResource>;
-  patchGroup(groupId: string, patchData: GroupPatchData, attributesToReturn?: string[]): Promise<any> {
-    return this._groups.patchResource(groupId, patchData, attributesToReturn);
+  patchGroup(
+    groupId: string,
+    patchData: GroupPatchData,
+    { attributes }: { attributes?: string[] },
+  ): Promise<GroupResource>;
+  patchGroup(groupId: string, patchData: GroupPatchData, { attributes }: { attributes?: string[] } = {}): Promise<any> {
+    return this._groups.patchResource(groupId, patchData, attributes);
   }
 
   deleteGroup(groupId: string): Promise<void> {
@@ -86,12 +98,16 @@ export class ScimApiClient {
     return this._devices.getResourceList(params);
   }
 
-  fetchDevice(deviceId: string, attributesToReturn?: string[]): Promise<DeviceResource> {
-    return this._devices.getResource(deviceId, attributesToReturn);
+  fetchDevice(deviceId: string, { attributes }: { attributes?: string[] } = {}): Promise<DeviceResource> {
+    return this._devices.getResource(deviceId, attributes);
   }
 
-  updateDevice(deviceId: string, deviceData: DeviceData, attributesToReturn?: string[]): Promise<DeviceResource> {
-    return this._devices.updateResource(deviceId, deviceData, attributesToReturn);
+  updateDevice(
+    deviceId: string,
+    deviceData: DeviceData,
+    { attributes }: { attributes?: string[] } = {},
+  ): Promise<DeviceResource> {
+    return this._devices.updateResource(deviceId, deviceData, attributes);
   }
 
   deleteDevice(deviceId: string): Promise<void> {

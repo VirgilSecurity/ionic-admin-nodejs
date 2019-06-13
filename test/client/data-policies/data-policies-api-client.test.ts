@@ -79,7 +79,7 @@ test('can specify "merge" option when creating or updating multiple policies', a
     { id: '123', policyId: 'UpdatedPolicyName' },
     { policyId: 'NewPolicyName', description: 'Allow if country is XYZ' },
   ];
-  await policies.createOrUpdatePolicies(data, 'true');
+  await policies.createOrUpdatePolicies(data, { merge: 'true' });
 
   expect(reqExecutorMock.post).toHaveBeenCalledWith('/policies', data, { params: { merge: 'true' } });
 });
