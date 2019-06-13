@@ -16,7 +16,7 @@ The Ionic Admin SDK enables developers to manage users, groups, data markings an
 This library hasn't been published on npm yet and needs to be installed from GitHub:
 
 ```sh
-npm i https://github.com/VirgilSecurity/ionic-admin-nodejs/releases/download/v0.2.0/ionic-admin-sdk-0.2.0.tgz
+npm i https://github.com/VirgilSecurity/ionic-admin-nodejs/releases/download/v0.2.1/ionic-admin-sdk-0.2.1.tgz
 ```
 
 ## Usage
