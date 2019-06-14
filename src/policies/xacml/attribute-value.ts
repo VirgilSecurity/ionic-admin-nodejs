@@ -12,7 +12,7 @@ export class AttributeValue extends ConditionExpressionNode {
 
   toJson() {
     return {
-      dataType: this.dataType,
+      dataType: this.dataType.replace(/Bag$/, ''),
       value: this.value,
     };
   }

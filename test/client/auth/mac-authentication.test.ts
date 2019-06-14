@@ -1,5 +1,6 @@
 import { createHmac } from 'crypto';
 import MacAuthentication from '../../../src/client/auth/mac-authentication';
+import { AxiosRequestConfig } from 'axios';
 
 test('appends Authorization header to the request', () => {
   const apiKeyId = 'test_id';
@@ -7,7 +8,7 @@ test('appends Authorization header to the request', () => {
   const auth = new MacAuthentication(apiKeyId, apiKeySecret.toString('base64'));
 
   const now = new Date().toUTCString();
-  const request = {
+  const request: AxiosRequestConfig = {
     method: 'GET',
     url: 'https://example.com/test',
     headers: {
@@ -34,7 +35,7 @@ test('appends Date header if not set', () => {
   const apiKeySecret = Buffer.from('test_secret');
   const auth = new MacAuthentication(apiKeyId, apiKeySecret.toString('base64'));
 
-  const request = {
+  const request: AxiosRequestConfig = {
     method: 'GET',
     url: 'https://example.com/test',
     headers: {} as any,
@@ -50,7 +51,7 @@ test('excludes /v2 prefix from pathname', () => {
   const auth = new MacAuthentication(apiKeyId, apiKeySecret.toString('base64'));
 
   const now = new Date().toUTCString();
-  const request = {
+  const request: AxiosRequestConfig = {
     method: 'GET',
     url: 'https://example.com/v2/test', // /v2 prefix included
     headers: {
@@ -78,7 +79,7 @@ test('includes Content-Type and Content-MD5 headers', () => {
   const auth = new MacAuthentication(apiKeyId, apiKeySecret.toString('base64'));
 
   const now = new Date().toUTCString();
-  const request = {
+  const request: AxiosRequestConfig = {
     method: 'GET',
     url: 'https://example.com/test',
     headers: {

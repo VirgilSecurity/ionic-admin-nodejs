@@ -61,7 +61,7 @@ test('create policy to ensure that data classified as sensitive or very sensitiv
         functionId: 'string-at-least-one-member-of',
         args: [
           { category: 'resource', id: 'classification' },
-          { dataType: 'stringBag', value: ['sensitive', 'very-sensitive'] },
+          { dataType: 'string', value: ['sensitive', 'very-sensitive'] },
         ],
       },
     },
