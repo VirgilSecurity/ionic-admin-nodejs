@@ -1,6 +1,6 @@
 {
   "name": "ionic-admin-sdk",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "",
   "keywords": [],
   "main": "dist/ionic-admin-sdk.cjs.js",
