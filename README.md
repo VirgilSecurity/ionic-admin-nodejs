@@ -551,33 +551,6 @@ const myPolicy = createPolicy({ policyId: 'MyPolicy3', ruleCombiningAlgId: 'firs
   .toJson();
 ```
 
-### Generating SAML Assertion
-
-For generating SAML Assertions there is a function called `buildSamlResponse`, which takes a single parameter of type object and returns a string with the signed xml.
-The parameters are:
-
-* `privateKey` - The private key to use to calculate the signature of the Assertion
-* `userEmail` - Email address of the User for whom the Assertion is generated
-* `recipientUrl` - URL of the Enrollment Endpoint
-* `recipientName` - Assertion Consumer Service name. Configured on the Enrollment Server
-* `issuer` - Issuer of the assetion
-* `inResponseTo` - Optional. Id of the request. Default is `uuid()`
-* `validDaysBefore` - Optional. Default is 0.
-* `validDaysAfter` - Optional. Default is 1.
-
-```javascript
-const { buildSamlResponse } = require('ionic-admin-sdk');
-
-const samlResponse = buildResponse({
-  userEmail: 'username@example.com',
-  privateKey: process.env.IONIC_IDENTITY_PROVIDER_PRIVATE_KEY,
-  issuer: process.env.IONIC_IDENTITY_PROVIDER_ID,
-  recipientUrl: process.env.IONIC_ENROLLMENT_ENDPOINT,
-  recipientName: process.env.IONIC_ASSERTION_CONSUMER_SERVICE
-});
-
-console.log(samlResponse); // xml string
-```
 
 ## To Do
 

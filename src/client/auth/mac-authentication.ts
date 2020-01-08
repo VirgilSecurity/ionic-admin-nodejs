@@ -44,5 +44,5 @@ function createStringToSign(req: AxiosRequestConfig): string {
 
 function getNormalizedPathname(url: string): string {
   const { pathname = '' } = parse(url);
-  return pathname.replace(/^\/v2/, '');
+  return pathname!.replace(/^\/v2/, '');
 }

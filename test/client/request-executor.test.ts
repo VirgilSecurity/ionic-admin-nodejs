@@ -39,7 +39,7 @@ describe('RequestExecutor', () => {
 
   test('should authenticate requests', async () => {
     const url = '/test';
-    const config = { url: baseUrl + url, method: 'get' };
+    const config = { url, baseURL: baseUrl, method: 'get' };
     const executor = new RequestExecutor({
       baseUrl,
       authentication: authenticationStub,
